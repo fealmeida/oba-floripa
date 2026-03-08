@@ -23,20 +23,20 @@ A OBA Floripa conecta pessoas a animais que precisam de amor, abrigo e um lar. O
 ## Pré-requisitos
 
 - **Node.js** 18.17+ (recomendado 20 LTS)
-- **pnpm** (gerenciador de pacotes do projeto)
+- **Yarn** (gerenciador de pacotes do projeto)
 
 ## Como rodar
 
 ### Instalação
 
 ```bash
-pnpm install
+yarn install
 ```
 
 ### Desenvolvimento
 
 ```bash
-pnpm dev
+yarn dev
 ```
 
 Acesse [http://localhost:3000](http://localhost:3000).
@@ -44,14 +44,14 @@ Acesse [http://localhost:3000](http://localhost:3000).
 ### Build e produção
 
 ```bash
-pnpm build
-pnpm start
+yarn build
+yarn start
 ```
 
 ### Lint
 
 ```bash
-pnpm lint
+yarn lint
 ```
 
 ## Estrutura do projeto
