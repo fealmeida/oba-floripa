@@ -11,8 +11,9 @@ import {
   FileText,
   CheckCircle,
 } from "lucide-react";
+import Image from "next/image";
 import { useState } from "react";
-import { createClient } from "@/lib/supabase/client";
+import { submitAdocao } from "@/app/actions/submit-adocao";
 import { getColorsForAnimal } from "@/lib/supabase";
 
 interface Animal {
@@ -39,7 +40,9 @@ interface AdoptionModalProps {
 }
 
 export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
-  const accent = animal ? getColorsForAnimal(animal.tag ?? null, animal.type).accent : "#FF5500";
+  const accent = animal
+    ? getColorsForAnimal(animal.tag ?? null, animal.type).accent
+    : "#FF5500";
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -68,8 +71,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
     if (!animal) return;
     setIsSubmitting(true);
     setSubmitError(null);
-    const supabase = createClient();
-    const { error } = await supabase.from("solicitacoes_adocao").insert({
+    const result = await submitAdocao({
       animal_id: String(animal.id),
       nome: formData.name,
       email: formData.email,
@@ -82,8 +84,8 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
       mensagem: formData.message || null,
     });
     setIsSubmitting(false);
-    if (error) {
-      setSubmitError(error.message);
+    if (!result.success) {
+      setSubmitError(result.error);
       return;
     }
     setIsSubmitted(true);
@@ -149,18 +151,20 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
 
                 {/* Animal info */}
                 <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden border-4 border-white/30 shadow-lg">
-                    <img
+                  <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-4 border-white/30 shadow-lg shrink-0">
+                    <Image
                       src={animal.img}
                       alt={animal.name}
-                      className="w-full h-full object-cover"
+                      width={80}
+                      height={80}
+                      className="object-cover"
                     />
                   </div>
                   <div>
                     <p
                       className="text-white/80 mb-1"
                       style={{
-                        fontFamily: "Space Grotesk, sans-serif",
+                        fontFamily: "var(--font-sans)",
                         fontSize: "0.8rem",
                         letterSpacing: "0.1em",
                         textTransform: "uppercase",
@@ -171,7 +175,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                     <h3
                       className="text-white"
                       style={{
-                        fontFamily: "Syne, sans-serif",
+                        fontFamily: "var(--font-heading)",
                         fontWeight: 800,
                         fontSize: "2rem",
                         lineHeight: 1,
@@ -182,7 +186,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                     <p
                       className="text-white/90 mt-1"
                       style={{
-                        fontFamily: "Space Grotesk, sans-serif",
+                        fontFamily: "var(--font-sans)",
                         fontSize: "0.9rem",
                       }}
                     >
@@ -220,7 +224,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                     <p
                       className="text-[#555] mb-6"
                       style={{
-                        fontFamily: "Space Grotesk, sans-serif",
+                        fontFamily: "var(--font-sans)",
                         fontSize: "0.9rem",
                         lineHeight: 1.7,
                       }}
@@ -236,7 +240,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                         <label
                           className="flex items-center gap-2 text-[#333] mb-2"
                           style={{
-                            fontFamily: "Space Grotesk, sans-serif",
+                            fontFamily: "var(--font-sans)",
                             fontSize: "0.85rem",
                             fontWeight: 600,
                           }}
@@ -252,7 +256,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                           required
                           className="w-full px-4 py-3 rounded-xl border-2 border-[#E5E7EB] focus:border-[#FF5500] focus:outline-none transition-colors"
                           style={{
-                            fontFamily: "Space Grotesk, sans-serif",
+                            fontFamily: "var(--font-sans)",
                             fontSize: "0.9rem",
                           }}
                           placeholder="Seu nome"
@@ -263,7 +267,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                         <label
                           className="flex items-center gap-2 text-[#333] mb-2"
                           style={{
-                            fontFamily: "Space Grotesk, sans-serif",
+                            fontFamily: "var(--font-sans)",
                             fontSize: "0.85rem",
                             fontWeight: 600,
                           }}
@@ -279,7 +283,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                           required
                           className="w-full px-4 py-3 rounded-xl border-2 border-[#E5E7EB] focus:border-[#FF5500] focus:outline-none transition-colors"
                           style={{
-                            fontFamily: "Space Grotesk, sans-serif",
+                            fontFamily: "var(--font-sans)",
                             fontSize: "0.9rem",
                           }}
                           placeholder="seu@email.com"
@@ -292,7 +296,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                         <label
                           className="flex items-center gap-2 text-[#333] mb-2"
                           style={{
-                            fontFamily: "Space Grotesk, sans-serif",
+                            fontFamily: "var(--font-sans)",
                             fontSize: "0.85rem",
                             fontWeight: 600,
                           }}
@@ -308,7 +312,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                           required
                           className="w-full px-4 py-3 rounded-xl border-2 border-[#E5E7EB] focus:border-[#FF5500] focus:outline-none transition-colors"
                           style={{
-                            fontFamily: "Space Grotesk, sans-serif",
+                            fontFamily: "var(--font-sans)",
                             fontSize: "0.9rem",
                           }}
                           placeholder="(48) 99999-9999"
@@ -319,7 +323,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                         <label
                           className="flex items-center gap-2 text-[#333] mb-2"
                           style={{
-                            fontFamily: "Space Grotesk, sans-serif",
+                            fontFamily: "var(--font-sans)",
                             fontSize: "0.85rem",
                             fontWeight: 600,
                           }}
@@ -335,7 +339,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                           required
                           className="w-full px-4 py-3 rounded-xl border-2 border-[#E5E7EB] focus:border-[#FF5500] focus:outline-none transition-colors"
                           style={{
-                            fontFamily: "Space Grotesk, sans-serif",
+                            fontFamily: "var(--font-sans)",
                             fontSize: "0.9rem",
                           }}
                           placeholder="Florianópolis"
@@ -347,7 +351,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                       <label
                         className="flex items-center gap-2 text-[#333] mb-2"
                         style={{
-                          fontFamily: "Space Grotesk, sans-serif",
+                          fontFamily: "var(--font-sans)",
                           fontSize: "0.85rem",
                           fontWeight: 600,
                         }}
@@ -363,7 +367,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                         required
                         className="w-full px-4 py-3 rounded-xl border-2 border-[#E5E7EB] focus:border-[#FF5500] focus:outline-none transition-colors"
                         style={{
-                          fontFamily: "Space Grotesk, sans-serif",
+                          fontFamily: "var(--font-sans)",
                           fontSize: "0.9rem",
                         }}
                         placeholder="Rua, número, bairro"
@@ -376,7 +380,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                         <label
                           className="flex items-center gap-2 text-[#333] mb-2"
                           style={{
-                            fontFamily: "Space Grotesk, sans-serif",
+                            fontFamily: "var(--font-sans)",
                             fontSize: "0.85rem",
                             fontWeight: 600,
                           }}
@@ -391,7 +395,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                           required
                           className="w-full px-4 py-3 rounded-xl border-2 border-[#E5E7EB] focus:border-[#FF5500] focus:outline-none transition-colors"
                           style={{
-                            fontFamily: "Space Grotesk, sans-serif",
+                            fontFamily: "var(--font-sans)",
                             fontSize: "0.9rem",
                           }}
                         >
@@ -405,7 +409,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                         <label
                           className="flex items-center gap-2 text-[#333] mb-2"
                           style={{
-                            fontFamily: "Space Grotesk, sans-serif",
+                            fontFamily: "var(--font-sans)",
                             fontSize: "0.85rem",
                             fontWeight: 600,
                           }}
@@ -420,7 +424,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                           required
                           className="w-full px-4 py-3 rounded-xl border-2 border-[#E5E7EB] focus:border-[#FF5500] focus:outline-none transition-colors"
                           style={{
-                            fontFamily: "Space Grotesk, sans-serif",
+                            fontFamily: "var(--font-sans)",
                             fontSize: "0.9rem",
                           }}
                         >
@@ -436,7 +440,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                       <label
                         className="flex items-center gap-2 text-[#333] mb-2"
                         style={{
-                          fontFamily: "Space Grotesk, sans-serif",
+                          fontFamily: "var(--font-sans)",
                           fontSize: "0.85rem",
                           fontWeight: 600,
                         }}
@@ -450,7 +454,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                         required
                         className="w-full px-4 py-3 rounded-xl border-2 border-[#E5E7EB] focus:border-[#FF5500] focus:outline-none transition-colors"
                         style={{
-                          fontFamily: "Space Grotesk, sans-serif",
+                          fontFamily: "var(--font-sans)",
                           fontSize: "0.9rem",
                         }}
                       >
@@ -468,7 +472,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                       <label
                         className="flex items-center gap-2 text-[#333] mb-2"
                         style={{
-                          fontFamily: "Space Grotesk, sans-serif",
+                          fontFamily: "var(--font-sans)",
                           fontSize: "0.85rem",
                           fontWeight: 600,
                         }}
@@ -483,7 +487,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                         rows={4}
                         className="w-full px-4 py-3 rounded-xl border-2 border-[#E5E7EB] focus:border-[#FF5500] focus:outline-none transition-colors resize-none"
                         style={{
-                          fontFamily: "Space Grotesk, sans-serif",
+                          fontFamily: "var(--font-sans)",
                           fontSize: "0.9rem",
                         }}
                         placeholder={`Conte um pouco sobre você e por que deseja adotar ${animal.name}...`}
@@ -501,7 +505,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                       <p
                         className="text-[#555]"
                         style={{
-                          fontFamily: "Space Grotesk, sans-serif",
+                          fontFamily: "var(--font-sans)",
                           fontSize: "0.8rem",
                           lineHeight: 1.6,
                         }}
@@ -515,7 +519,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                     {submitError && (
                       <p
                         className="text-red-600 text-sm"
-                        style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                        style={{ fontFamily: "var(--font-sans)" }}
                       >
                         {submitError}
                       </p>
@@ -529,14 +533,16 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                       whileTap={!isSubmitting ? { scale: 0.98 } : {}}
                       className="w-full text-white py-4 rounded-2xl cursor-pointer border-none shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
                       style={{
-                        fontFamily: "Syne, sans-serif",
+                        fontFamily: "var(--font-heading)",
                         fontWeight: 700,
                         fontSize: "1rem",
                         background: `linear-gradient(135deg, ${accent}, ${accent}CC)`,
                         boxShadow: `0 8px 25px ${accent}55`,
                       }}
                     >
-                      {isSubmitting ? "Enviando..." : "Enviar solicitação de adoção →"}
+                      {isSubmitting
+                        ? "Enviando..."
+                        : "Enviar solicitação de adoção →"}
                     </motion.button>
                   </form>
                 ) : (
@@ -558,7 +564,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                     <h3
                       className="text-[#1A1A1A] mb-3"
                       style={{
-                        fontFamily: "Syne, sans-serif",
+                        fontFamily: "var(--font-heading)",
                         fontWeight: 800,
                         fontSize: "1.8rem",
                       }}
@@ -568,7 +574,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                     <p
                       className="text-[#555] max-w-md mx-auto"
                       style={{
-                        fontFamily: "Space Grotesk, sans-serif",
+                        fontFamily: "var(--font-sans)",
                         fontSize: "1rem",
                         lineHeight: 1.7,
                       }}

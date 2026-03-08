@@ -1,6 +1,7 @@
 "use client";
 import { motion, useInView } from "motion/react";
 import { useRef, useState, useCallback, useEffect } from "react";
+import Image from "next/image";
 import { MapPin, Calendar, Heart, ChevronLeft, ChevronRight } from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { PawPrint, StarIllustration, BoneIllustration } from "./Illustrations";
@@ -45,10 +46,12 @@ function AnimalCard({
     >
       {/* Image */}
       <div className="relative h-56 overflow-hidden">
-        <img
+        <Image
           src={animal.img}
           alt={animal.name}
-          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+          fill
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+          className="object-cover transition-transform duration-700 group-hover:scale-110"
         />
         {/* Color overlay on hover */}
         <div
@@ -67,7 +70,7 @@ function AnimalCard({
             }}
             className="absolute top-4 left-4 px-3 py-1 rounded-full text-white text-xs shadow-lg"
             style={{
-              fontFamily: "Space Grotesk, sans-serif",
+              fontFamily: "var(--font-sans)",
               fontWeight: 700,
               background: tagColor,
               letterSpacing: "0.05em",
@@ -99,7 +102,7 @@ function AnimalCard({
           <h3
             className="text-[#1A1A1A] flex items-center gap-2"
             style={{
-              fontFamily: "Syne, sans-serif",
+              fontFamily: "var(--font-heading)",
               fontWeight: 800,
               fontSize: "1.4rem",
             }}
@@ -109,7 +112,7 @@ function AnimalCard({
           <span
             className="px-3 py-1 rounded-full text-white"
             style={{
-              fontFamily: "Space Grotesk, sans-serif",
+              fontFamily: "var(--font-sans)",
               fontSize: "0.75rem",
               fontWeight: 600,
               background: accent,
@@ -127,7 +130,7 @@ function AnimalCard({
             <Calendar size={13} />
             <span
               style={{
-                fontFamily: "Space Grotesk, sans-serif",
+                fontFamily: "var(--font-sans)",
                 fontSize: "0.8rem",
                 color: "#666",
               }}
@@ -139,7 +142,7 @@ function AnimalCard({
             <MapPin size={13} style={{ color: accent }} />
             <span
               style={{
-                fontFamily: "Space Grotesk, sans-serif",
+                fontFamily: "var(--font-sans)",
                 fontSize: "0.8rem",
                 color: "#666",
               }}
@@ -152,7 +155,7 @@ function AnimalCard({
         <p
           className="text-[#555] mb-5"
           style={{
-            fontFamily: "Space Grotesk, sans-serif",
+            fontFamily: "var(--font-sans)",
             fontSize: "0.875rem",
             lineHeight: 1.7,
           }}
@@ -166,7 +169,7 @@ function AnimalCard({
           onClick={() => onAdopt(animal)}
           className="w-full text-white py-3 rounded-2xl cursor-pointer border-none transition-all duration-300 shadow-md"
           style={{
-            fontFamily: "Syne, sans-serif",
+            fontFamily: "var(--font-heading)",
             fontWeight: 700,
             fontSize: "0.9rem",
             background: accent,
@@ -305,7 +308,7 @@ export function Animals() {
               <span
                 className="bg-[#FF5500]/10 text-[#FF5500] px-4 py-1.5 rounded-full uppercase tracking-widest"
                 style={{
-                  fontFamily: "Space Grotesk, sans-serif",
+                  fontFamily: "var(--font-sans)",
                   fontSize: "0.72rem",
                   fontWeight: 700,
                 }}
@@ -319,7 +322,7 @@ export function Animals() {
               transition={{ duration: 0.8, delay: 0.1 }}
               className="text-[#1A1A1A]"
               style={{
-                fontFamily: "Syne, sans-serif",
+                fontFamily: "var(--font-heading)",
                 fontWeight: 800,
                 fontSize: "clamp(2rem, 5vw, 3.5rem)",
                 lineHeight: 1.05,
@@ -340,7 +343,7 @@ export function Animals() {
             <p
               className="text-[#555]"
               style={{
-                fontFamily: "Space Grotesk, sans-serif",
+                fontFamily: "var(--font-sans)",
                 fontSize: "0.875rem",
                 lineHeight: 1.7,
               }}
@@ -356,21 +359,21 @@ export function Animals() {
           {loading ? (
             <div
               className="text-center py-16 text-[#666]"
-              style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "1rem" }}
+              style={{ fontFamily: "var(--font-sans)", fontSize: "1rem" }}
             >
               Carregando animais...
             </div>
           ) : error ? (
             <div
               className="text-center py-16 text-red-600"
-              style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "1rem" }}
+              style={{ fontFamily: "var(--font-sans)", fontSize: "1rem" }}
             >
               Não foi possível carregar os animais. Tente novamente mais tarde.
             </div>
           ) : animals.length === 0 ? (
             <div
               className="text-center py-16 text-[#666]"
-              style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "1rem" }}
+              style={{ fontFamily: "var(--font-sans)", fontSize: "1rem" }}
             >
               Nenhum animal disponível no momento.
             </div>

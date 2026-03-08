@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { spaceGrotesk, syne } from '@/lib/fonts'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -16,8 +17,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="pt-BR">
-      <body className="antialiased overflow-x-hidden" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+    <html lang="pt-BR" className={`${spaceGrotesk.variable} ${syne.variable}`}>
+      <body className="antialiased overflow-x-hidden font-sans">
         {children}
       </body>
     </html>
