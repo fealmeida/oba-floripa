@@ -481,8 +481,8 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                         }}
                       >
                         ℹ️ <strong>Processo de adoção:</strong> Após o envio,
-                        faremos uma entrevista, visita domiciliar e você
-                        assinará um termo de adoção responsável.
+                        faremos uma entrevista e você assinará um termo de
+                        adoção responsável.
                       </p>
                     </div>
 
