@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X } from "lucide-react";
-import { PawPrint } from "./Illustrations";
+import Image from "next/image";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -19,6 +19,7 @@ export function Navbar() {
     { label: "Animais", href: "#animais" },
     { label: "Adoção", href: "#adocao" },
     { label: "Doações", href: "#doacoes" },
+    { label: "Seja voluntário", href: "#mutirao-mata-fome" },
   ];
 
   const scrollTo = (href: string) => {
@@ -46,24 +47,14 @@ export function Navbar() {
             onClick={(e) => { e.preventDefault(); window.scrollTo({ top: 0, behavior: "smooth" }); }}
             className="flex items-center gap-2 group"
           >
-            <motion.div
-              animate={{ rotate: [0, 15, -10, 0] }}
-              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-            >
-              <PawPrint color="#FF5500" className="w-8 h-8" />
-            </motion.div>
-            <span
-              className={`select-none transition-colors ${scrolled ? "text-[#FF5500]" : "text-[#FF5500]"}`}
-              style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "1.4rem", letterSpacing: "-0.02em" }}
-            >
-              OBA
-            </span>
-            <span
-              className={`select-none transition-colors ${scrolled ? "text-[#1A1A1A]" : "text-[#333]"}`}
-              style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 400, fontSize: "0.9rem", letterSpacing: "0.18em" }}
-            >
-              FLORIPA
-            </span>
+            <Image
+              src="/logo-oba.svg"
+              alt="OBA Floripa"
+              width={180}
+              height={52}
+              className="h-11 w-auto"
+              priority
+            />
           </a>
 
           {/* Desktop links */}
@@ -102,20 +93,20 @@ export function Navbar() {
       {/* Mobile menu */}
       <AnimatePresence>
         {menuOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-40 bg-[#FFF5EC] flex flex-col items-center justify-center gap-7"
-          >
             <motion.div
-              animate={{ rotate: [0, 15, -15, 0] }}
-              transition={{ repeat: Infinity, duration: 3 }}
-              className="mb-2"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="fixed inset-0 z-40 bg-[#FFF5EC] flex flex-col items-center justify-center gap-7"
             >
-              <PawPrint color="#FF5500" className="w-16 h-16" />
-            </motion.div>
+              <Image
+                src="/logo-oba.svg"
+                alt="OBA Floripa"
+                width={220}
+                height={64}
+                className="h-14 w-auto mb-2"
+              />
             {links.map((l, i) => (
               <motion.button
                 key={l.href}

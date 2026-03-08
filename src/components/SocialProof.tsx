@@ -76,7 +76,7 @@ export function SocialProof() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="bg-[#111] py-24 md:py-36 overflow-hidden relative">
+    <section id="mutirao-mata-fome" className="bg-[#111] py-24 md:py-36 overflow-hidden relative">
       {/* Top colorful bar */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-[#10B981] via-[#8B5CF6] to-[#FF6B9D]" />
 

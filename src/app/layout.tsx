@@ -4,6 +4,10 @@ import './globals.css'
 export const metadata: Metadata = {
   title: 'OBA Floripa',
   description: 'Adoção responsável de animais em Florianópolis. Conheça nossos animais disponíveis e faça parte dessa causa.',
+  icons: {
+    icon: '/logo-oba.svg',
+    apple: '/logo-oba.svg',
+  },
 }
 
 export default function RootLayout({
