@@ -1,6 +1,7 @@
 "use client";
 import { motion } from "motion/react";
 import Image from "next/image";
+import Link from "next/link";
 import {
   Instagram,
   Facebook,
@@ -43,6 +44,7 @@ const links = [
   { label: "Fazer doação", href: "#doacoes" },
   { label: "Seja voluntário", href: "#mutirao-mata-fome" },
   { label: "Política de privacidade", href: "#" },
+  { label: "Área admin", href: "/admin", isPage: true },
 ];
 
 const WHATSAPP_URL =
@@ -154,21 +156,41 @@ export function Footer() {
               NAVEGAÇÃO
             </p>
             <ul className="space-y-3">
-              {links.map((l) => (
-                <li key={l.label}>
-                  <button
-                    onClick={() => scrollTo(l.href)}
-                    className="text-white/75 hover:text-[#FF5500] transition-colors duration-200 cursor-pointer bg-transparent border-none text-left flex items-center gap-2 group"
-                    style={{
-                      fontFamily: "Space Grotesk, sans-serif",
-                      fontSize: "0.875rem",
-                    }}
-                  >
+              {links.map((l) => {
+                const linkContent = (
+                  <>
                     <span className="w-1 h-1 rounded-full bg-[#FF5500]/0 group-hover:bg-[#FF5500] transition-all" />
                     {l.label}
-                  </button>
-                </li>
-              ))}
+                  </>
+                );
+                return (
+                  <li key={l.label}>
+                    {"isPage" in l && l.isPage ? (
+                      <Link
+                        href={l.href}
+                        className="text-white/75 hover:text-[#FF5500] transition-colors duration-200 flex items-center gap-2 group"
+                        style={{
+                          fontFamily: "Space Grotesk, sans-serif",
+                          fontSize: "0.875rem",
+                        }}
+                      >
+                        {linkContent}
+                      </Link>
+                    ) : (
+                      <button
+                        onClick={() => scrollTo(l.href)}
+                        className="text-white/75 hover:text-[#FF5500] transition-colors duration-200 cursor-pointer bg-transparent border-none text-left flex items-center gap-2 group"
+                        style={{
+                          fontFamily: "Space Grotesk, sans-serif",
+                          fontSize: "0.875rem",
+                        }}
+                      >
+                        {linkContent}
+                      </button>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
 
