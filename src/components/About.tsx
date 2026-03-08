@@ -41,6 +41,8 @@ export function About() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
 
+  const IMG = "/images/hero/hero-16.jpg";
+
   return (
     <section
       id="sobre"
@@ -196,27 +198,13 @@ export function About() {
             <div className="absolute inset-0 bg-gradient-to-br from-[#FFB800] to-[#FF5500] rounded-3xl rotate-3" />
             <div className="relative rounded-3xl overflow-hidden aspect-[4/5]">
               <img
-                src={WOMAN_IMG}
+                src={IMG}
                 alt="Tutora feliz com seu pet adotado"
                 className="w-full h-full object-cover"
               />
-              {/* Floating badge */}
-              <motion.div
-                initial={{ scale: 0, rotate: -15 }}
-                animate={inView ? { scale: 1, rotate: -8 } : {}}
-                transition={{ delay: 0.7, type: "spring", bounce: 0.5 }}
-                className="absolute top-6 -right-4 bg-[#FFB800] text-[#1A1A1A] rounded-2xl px-4 py-2 shadow-lg"
-                style={{
-                  fontFamily: "Syne, sans-serif",
-                  fontWeight: 800,
-                  fontSize: "0.85rem",
-                }}
-              >
-                ❤️ Adotada!
-              </motion.div>
 
               {/* Bottom quote */}
-              <div className="absolute bottom-6 left-4 right-4 bg-white/95 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-3">
+              {/* <div className="absolute bottom-6 left-4 right-4 bg-white/95 backdrop-blur-sm rounded-2xl p-4 flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full bg-[#FF6B9D] flex items-center justify-center shrink-0">
                   <Heart size={18} className="text-white" fill="white" />
                 </div>
@@ -229,7 +217,8 @@ export function About() {
                       fontSize: "0.88rem",
                     }}
                   >
-                    "Adotar mudou minha vida."
+                    Centenas de animais foram castrados, vacinados, tratados,
+                    resgatados e adotados ao longo da nossa jornada.
                   </p>
                   <p
                     className="text-[#777]"
@@ -238,10 +227,10 @@ export function About() {
                       fontSize: "0.78rem",
                     }}
                   >
-                    — Juliana, tutora da Mel
+                    Este é o nosso maior legado!
                   </p>
                 </div>
-              </div>
+              </div> */}
             </div>
 
             {/* Floating illustrations */}

@@ -10,8 +10,18 @@ import {
   SparkleIllustration,
 } from "./Illustrations";
 
-const HERO_IMG =
-  "https://images.unsplash.com/photo-1763718592879-127a175bb396?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxoYXBweSUyMHBsYXlmdWwlMjBkb2dzJTIwY29sb3JmdWwlMjBwYXJrJTIwc3Vubnl8ZW58MXx8fHwxNzcyNjQ4NzkzfDA&ixlib=rb-4.1.0&q=80&w=1080";
+// Todas as imagens do hero: 29 JPG (0–28) + 13 PNG (29–41). Troque o índice em HERO_IMG para testar.
+const HERO_IMAGES: readonly string[] = [
+  ...Array.from(
+    { length: 29 },
+    (_, i) => `/images/hero/hero-${String(i + 1).padStart(2, "0")}.jpg`,
+  ),
+  ...Array.from(
+    { length: 13 },
+    (_, i) => `/images/hero/hero-${String(i + 30).padStart(2, "0")}.png`,
+  ),
+];
+const HERO_IMG = HERO_IMAGES[1]; // índice 0–41 para testar outra
 
 const floatingElements = [
   {
@@ -124,7 +134,7 @@ export function Hero() {
       >
         <img
           src={HERO_IMG}
-          alt="Cachorros felizes brincando"
+          alt="Animais e voluntários da OBA Floripa"
           className="w-full h-full object-cover object-center"
           style={{ filter: "brightness(0.82) saturate(1.2)" }}
         />

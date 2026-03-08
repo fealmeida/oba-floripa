@@ -10,8 +10,7 @@ import {
   StarIllustration,
 } from "./Illustrations";
 
-const DOG_IMG =
-  "https://images.unsplash.com/photo-1763738173654-a3a7f6cd7d13?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3aGl0ZSUyMGZsdWZmeSUyMGRvZyUyMGN1dGUlMjBhZG9wdGlvbnxlbnwxfHx8fDE3NzI2NDc2NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080";
+const DOG_IMG = "/images/hero/hero-22.jpg";
 
 const impacts = [
   { icon: Package, label: "Ração e cuidados diários", color: "#FF5500" },
@@ -101,9 +100,7 @@ export function Donations() {
                 letterSpacing: "-0.025em",
               }}
             >
-              Sua doação tem
-              <br />
-              <span style={{ color: "#FF6B9D" }}>nome e rosto.</span>
+              Doe!
             </motion.h2>
 
             <motion.p
@@ -285,8 +282,7 @@ export function Donations() {
                   fontFamily: "Syne, sans-serif",
                   fontWeight: 700,
                   fontSize: "1rem",
-                  background:
-                    "linear-gradient(135deg, #FF5500, #FF6B9D)",
+                  background: "linear-gradient(135deg, #FF5500, #FF6B9D)",
                   boxShadow: "0 8px 25px rgba(255, 85, 0, 0.35)",
                 }}
               >
