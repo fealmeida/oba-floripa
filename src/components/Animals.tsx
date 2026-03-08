@@ -5,165 +5,8 @@ import { MapPin, Calendar, Heart, ChevronLeft, ChevronRight } from "lucide-react
 import useEmblaCarousel from "embla-carousel-react";
 import { PawPrint, StarIllustration, BoneIllustration } from "./Illustrations";
 import { AdoptionModal } from "./AdoptionModal";
-
-const animals = [
-  {
-    id: 1,
-    name: "Thor",
-    age: "2 anos",
-    type: "cachorro",
-    gender: "macho",
-    desc: "Brincalhão, cheio de energia e ama crianças. Thor espera por alguém que acompanhe sua animação.",
-    img: "https://images.unsplash.com/photo-1651212508936-dfb6f6ea3d81?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnb2xkZW4lMjByZXRyaWV2ZXIlMjBwdXBweSUyMGhhcHB5fGVufDF8fHx8MTc3MjYyMzExOXww&ixlib=rb-4.1.0&q=80&w=1080",
-    tag: "Destaque",
-    tagColor: "#FF5500",
-    cardBg: "from-[#FFF0E6] to-[#FFE4CC]",
-    accent: "#FF5500",
-  },
-  {
-    id: 2,
-    name: "Luna",
-    age: "3 anos",
-    type: "gato",
-    gender: "fêmea",
-    desc: "Serena e independente, Luna adora uma boa sessão de carinho no fim do dia.",
-    img: "https://images.unsplash.com/photo-1769634847861-69ee4fa8c343?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXQlMjBhZG9wdGlvbiUyMHNoZWx0ZXIlMjBjdXRlJTIwa2l0dGVufGVufDF8fHx8MTc3MjY0NzY2MHww&ixlib=rb-4.1.0&q=80&w=1080",
-    tag: "Nova",
-    tagColor: "#10B981",
-    cardBg: "from-[#E6FFF5] to-[#CCFFE8]",
-    accent: "#10B981",
-  },
-  {
-    id: 3,
-    name: "Zeus",
-    age: "4 anos",
-    type: "cachorro",
-    gender: "macho",
-    desc: "Tranquilo, leal e muito carinhoso. Zeus é perfeito para quem busca um companheiro fiel.",
-    img: "https://images.unsplash.com/photo-1671572418326-69416b142404?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxibGFjayUyMGRvZyUyMHJlc2N1ZSUyMHBvcnRyYWl0JTIwY2xvc2UlMjB1cHxlbnwxfHx8fDE3NzI2NDc2NjF8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    tag: null,
-    tagColor: "#8B5CF6",
-    cardBg: "from-[#F0E6FF] to-[#E4CCFF]",
-    accent: "#8B5CF6",
-  },
-  {
-    id: 4,
-    name: "Mel",
-    age: "1 ano",
-    type: "cachorro",
-    gender: "fêmea",
-    desc: "Doce como o nome, Mel está pronta para trazer alegria para qualquer lar que a receba.",
-    img: "https://images.unsplash.com/photo-1762893620918-af52d50a7dde?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtaXhlZCUyMGJyZWVkJTIwZG9nJTIwcGxheWZ1bCUyMG91dGRvb3J8ZW58MXx8fHwxNzcyNjQ3NjY1fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    tag: "Urgente",
-    tagColor: "#EF4444",
-    cardBg: "from-[#FFF0E6] to-[#FFDDD5]",
-    accent: "#EF4444",
-  },
-  {
-    id: 5,
-    name: "Nala",
-    age: "5 anos",
-    type: "gato",
-    gender: "fêmea",
-    desc: "Elegante e curiosa, Nala observa tudo com seus olhos de amêndoa. Adora janelas.",
-    img: "https://images.unsplash.com/photo-1708417250704-770feaf07660?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxncmV5JTIwY2F0JTIwc3dlZXQlMjBsb29raW5nfGVufDF8fHx8MTc3MjY0NzY2M3ww&ixlib=rb-4.1.0&q=80&w=1080",
-    tag: null,
-    tagColor: "#FF6B9D",
-    cardBg: "from-[#FFF0F6] to-[#FFCCE6]",
-    accent: "#FF6B9D",
-  },
-  {
-    id: 6,
-    name: "Simba",
-    age: "2 anos",
-    type: "gato",
-    gender: "macho",
-    desc: "Laranjinha e cheio de personalidade. Simba vai animar qualquer ambiente com suas travessuras.",
-    img: "https://images.unsplash.com/photo-1768523506095-deb25e8f13a3?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvcmFuZ2UlMjB0YWJieSUyMGNhdCUyMGN1cmlvdXMlMjBwb3J0cmFpdHxlbnwxfHx8fDE3NzI2NDc2NjJ8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    tag: "Popular",
-    tagColor: "#FFB800",
-    cardBg: "from-[#FFFBE6] to-[#FFF2CC]",
-    accent: "#FFB800",
-  },
-  {
-    id: 7,
-    name: "Bolt",
-    age: "6 meses",
-    type: "cachorro",
-    gender: "macho",
-    desc: "Cheio de energia e amor para dar. Bolt precisa de espaço para brincar e correr.",
-    img: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxodXNreSUyMHB1cHB5JTIwYmx1ZSUyMGV5ZXN8ZW58MXx8fHwxNzI2Mzg5MTI1fDA&ixlib=rb-4.1.0&q=80&w=1080",
-    tag: "Nova",
-    tagColor: "#10B981",
-    cardBg: "from-[#E6FFF5] to-[#CCFFE8]",
-    accent: "#10B981",
-  },
-  {
-    id: 8,
-    name: "Mia",
-    age: "4 anos",
-    type: "gato",
-    gender: "fêmea",
-    desc: "Calma e afetuosa, Mia é ideal para quem busca uma companhia tranquila e leal.",
-    img: "https://images.unsplash.com/photo-1574158622682-e40e69881006?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxibGFjayUyMGNhdCUyMHBvcnRyYWl0fGVufDF8fHx8MTcyNjM4OTEyNXww&ixlib=rb-4.1.0&q=80&w=1080",
-    tag: null,
-    tagColor: "#8B5CF6",
-    cardBg: "from-[#F0E6FF] to-[#E4CCFF]",
-    accent: "#8B5CF6",
-  },
-  {
-    id: 9,
-    name: "Max",
-    age: "3 anos",
-    type: "cachorro",
-    gender: "macho",
-    desc: "Protetor e amoroso. Max é o guardião perfeito para sua família.",
-    img: "https://images.unsplash.com/photo-1587300003388-59208cc962cb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxnZXJtYW4lMjBzaGVwaGVyZCUyMGRvZ3xlbnwxfHx8fDE3MjYzODkxMjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    tag: "Destaque",
-    tagColor: "#FF5500",
-    cardBg: "from-[#FFF0E6] to-[#FFE4CC]",
-    accent: "#FF5500",
-  },
-  {
-    id: 10,
-    name: "Belinha",
-    age: "2 anos",
-    type: "cachorro",
-    gender: "fêmea",
-    desc: "Meiga e sociável, adora crianças e outros pets. Belinha é pura alegria!",
-    img: "https://images.unsplash.com/photo-1517849845537-4d257902454a?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiZWFnbGUlMjBkb2clMjBoYXBweXxlbnwxfHx8fDE3MjYzODkxMjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    tag: "Popular",
-    tagColor: "#FFB800",
-    cardBg: "from-[#FFFBE6] to-[#FFF2CC]",
-    accent: "#FFB800",
-  },
-  {
-    id: 11,
-    name: "Fred",
-    age: "1 ano",
-    type: "gato",
-    gender: "macho",
-    desc: "Aventureiro e brincalhão, Fred adora explorar e fazer novas amizades.",
-    img: "https://images.unsplash.com/photo-1529778873920-4da4926a72c2?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxncmluZ2UlMjBjYXQlMjBwb3J0cmFpdHxlbnwxfHx8fDE3MjYzODkxMjV8MA&ixlib=rb-4.1.0&q=80&w=1080",
-    tag: null,
-    tagColor: "#FF6B9D",
-    cardBg: "from-[#FFF0F6] to-[#FFCCE6]",
-    accent: "#FF6B9D",
-  },
-  {
-    id: 12,
-    name: "Cacau",
-    age: "5 anos",
-    type: "cachorro",
-    gender: "fêmea",
-    desc: "Companheira fiel e tranquila. Cacau está pronta para ser sua melhor amiga.",
-    img: "https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxicm93biUyMGRvZyUyMHBvcnRyYWl0fGVufDF8fHx8MTcyNjM4OTEyNXww&ixlib=rb-4.1.0&q=80&w=1080",
-    tag: "Urgente",
-    tagColor: "#EF4444",
-    cardBg: "from-[#FFF0E6] to-[#FFDDD5]",
-    accent: "#EF4444",
-  },
-];
+import { createClient } from "@/lib/supabase/client";
+import { mapAnimalRowToUI, getColorsForAnimal, type AnimalForUI } from "@/lib/supabase";
 
 /** Emoji por tipo: gato → 🐱, cachorro → patinhas 🐾🐾🐾 */
 function getEmojiByType(type: string): string {
@@ -176,10 +19,11 @@ function AnimalCard({
   index,
   onAdopt,
 }: {
-  animal: (typeof animals)[0];
+  animal: AnimalForUI;
   index: number;
-  onAdopt: (animal: (typeof animals)[0]) => void;
+  onAdopt: (animal: AnimalForUI) => void;
 }) {
+  const { tagColor, cardBg, accent } = getColorsForAnimal(animal.tag, animal.type);
   const ref = useRef(null);
   const inView = useInView(ref, {
     once: true,
@@ -197,7 +41,7 @@ function AnimalCard({
         ease: [0.16, 1, 0.3, 1],
       }}
       whileHover={{ scale: 1.02 }}
-      className={`group bg-gradient-to-b ${animal.cardBg} rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-500 border border-white`}
+      className={`group bg-gradient-to-b ${cardBg} rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-500 border border-white`}
     >
       {/* Image */}
       <div className="relative h-56 overflow-hidden">
@@ -209,7 +53,7 @@ function AnimalCard({
         {/* Color overlay on hover */}
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
-          style={{ background: animal.accent }}
+          style={{ background: accent }}
         />
 
         {animal.tag && (
@@ -225,7 +69,7 @@ function AnimalCard({
             style={{
               fontFamily: "Space Grotesk, sans-serif",
               fontWeight: 700,
-              background: animal.tagColor,
+              background: tagColor,
               letterSpacing: "0.05em",
             }}
           >
@@ -237,13 +81,13 @@ function AnimalCard({
           whileTap={{ scale: 0.8 }}
           onClick={() => setLiked(!liked)}
           className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center cursor-pointer border-none shadow-md transition-all duration-300"
-          style={{
-            background: liked ? animal.accent : "white",
+            style={{
+            background: liked ? accent : "white",
           }}
         >
           <Heart
             size={16}
-            style={{ color: liked ? "white" : animal.accent }}
+            style={{ color: liked ? "white" : accent }}
             fill={liked ? "white" : "none"}
           />
         </motion.button>
@@ -268,7 +112,7 @@ function AnimalCard({
               fontFamily: "Space Grotesk, sans-serif",
               fontSize: "0.75rem",
               fontWeight: 600,
-              background: animal.accent,
+              background: accent,
             }}
           >
             {animal.gender === "fêmea" ? "Fêmea" : "Macho"}
@@ -278,7 +122,7 @@ function AnimalCard({
         <div className="flex items-center gap-4 mb-4">
           <div
             className="flex items-center gap-1"
-            style={{ color: animal.accent }}
+            style={{ color: accent }}
           >
             <Calendar size={13} />
             <span
@@ -292,7 +136,7 @@ function AnimalCard({
             </span>
           </div>
           {/* <div className="flex items-center gap-1">
-            <MapPin size={13} style={{ color: animal.accent }} />
+            <MapPin size={13} style={{ color: accent }} />
             <span
               style={{
                 fontFamily: "Space Grotesk, sans-serif",
@@ -325,8 +169,8 @@ function AnimalCard({
             fontFamily: "Syne, sans-serif",
             fontWeight: 700,
             fontSize: "0.9rem",
-            background: animal.accent,
-            boxShadow: `0 6px 20px ${animal.accent}55`,
+            background: accent,
+            boxShadow: `0 6px 20px ${accent}55`,
           }}
         >
           Quero adotar {animal.name} →
@@ -342,10 +186,33 @@ export function Animals() {
     once: true,
     margin: "-80px",
   });
-  const [selectedAnimal, setSelectedAnimal] = useState<
-    (typeof animals)[0] | null
-  >(null);
+  const [animals, setAnimals] = useState<AnimalForUI[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedAnimal, setSelectedAnimal] = useState<AnimalForUI | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const supabase = createClient();
+    supabase
+      .from("animais")
+      .select("*")
+      .eq("status", "disponível")
+      .order("created_at", { ascending: false })
+      .then(({ data, error: err }) => {
+        setLoading(false);
+        if (err) {
+          setError(err.message);
+          return;
+        }
+        setAnimals((data ?? []).map(mapAnimalRowToUI));
+      });
+  }, []);
+
+  const handleAdopt = (animal: AnimalForUI) => {
+    setSelectedAnimal(animal);
+    setIsModalOpen(true);
+  };
 
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
@@ -377,11 +244,6 @@ export function Animals() {
       emblaApi.off("select", onSelect);
     };
   }, [emblaApi, onSelect]);
-
-  const handleAdopt = (animal: (typeof animals)[0]) => {
-    setSelectedAnimal(animal);
-    setIsModalOpen(true);
-  };
 
   return (
     <section
@@ -491,6 +353,29 @@ export function Animals() {
 
         {/* Carrossel */}
         <div className="relative">
+          {loading ? (
+            <div
+              className="text-center py-16 text-[#666]"
+              style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "1rem" }}
+            >
+              Carregando animais...
+            </div>
+          ) : error ? (
+            <div
+              className="text-center py-16 text-red-600"
+              style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "1rem" }}
+            >
+              Não foi possível carregar os animais. Tente novamente mais tarde.
+            </div>
+          ) : animals.length === 0 ? (
+            <div
+              className="text-center py-16 text-[#666]"
+              style={{ fontFamily: "Space Grotesk, sans-serif", fontSize: "1rem" }}
+            >
+              Nenhum animal disponível no momento.
+            </div>
+          ) : (
+            <>
           <div className="overflow-hidden" ref={emblaRef}>
             <div className="flex gap-6 touch-pan-y" style={{ backfaceVisibility: "hidden" }}>
               {animals.map((a, i) => (
@@ -498,7 +383,11 @@ export function Animals() {
                   key={a.id}
                   className="flex-[0_0_100%] sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)] min-w-0 pl-2 first:pl-0"
                 >
-                  <AnimalCard animal={a} index={i} onAdopt={handleAdopt} />
+                  <AnimalCard
+                    animal={a}
+                    index={i}
+                    onAdopt={handleAdopt}
+                  />
                 </div>
               ))}
             </div>
@@ -529,6 +418,8 @@ export function Animals() {
               <ChevronRight className="w-6 h-6" />
             </motion.button>
           </div>
+            </>
+          )}
         </div>
 
         {/* Adoption Modal */}

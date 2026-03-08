@@ -12,14 +12,17 @@ import {
   CheckCircle,
 } from "lucide-react";
 import { useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+import { getColorsForAnimal } from "@/lib/supabase";
 
 interface Animal {
-  id: number;
+  id: string | number;
   name: string;
   type: string;
   gender: string;
+  tag?: string | null;
   emoji?: string;
-  accent: string;
+  accent?: string; // opcional: se não vier, derivamos com getColorsForAnimal(tag, type)
   img: string;
 }
 
@@ -36,6 +39,7 @@ interface AdoptionModalProps {
 }
 
 export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
+  const accent = animal ? getColorsForAnimal(animal.tag ?? null, animal.type).accent : "#FF5500";
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -48,6 +52,8 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
     message: "",
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -57,14 +63,34 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!animal) return;
+    setIsSubmitting(true);
+    setSubmitError(null);
+    const supabase = createClient();
+    const { error } = await supabase.from("solicitacoes_adocao").insert({
+      animal_id: String(animal.id),
+      nome: formData.name,
+      email: formData.email,
+      telefone: formData.phone,
+      endereco: formData.address,
+      cidade: formData.city,
+      tem_experiencia: formData.hasExperience || null,
+      tem_outros_pets: formData.hasOtherPets || null,
+      tipo_moradia: formData.houseType || null,
+      mensagem: formData.message || null,
+    });
+    setIsSubmitting(false);
+    if (error) {
+      setSubmitError(error.message);
+      return;
+    }
     setIsSubmitted(true);
-    // Aqui você adicionaria a lógica de envio do formulário
     setTimeout(() => {
       setIsSubmitted(false);
+      setSubmitError(null);
       onClose();
-      // Reset form
       setFormData({
         name: "",
         email: "",
@@ -108,7 +134,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
               <div
                 className="relative p-6 pb-8 text-white overflow-hidden"
                 style={{
-                  background: `linear-gradient(135deg, ${animal.accent}, ${animal.accent}DD)`,
+                  background: `linear-gradient(135deg, ${accent}, ${accent}DD)`,
                 }}
               >
                 {/* Close button */}
@@ -215,7 +241,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                             fontWeight: 600,
                           }}
                         >
-                          <User size={16} style={{ color: animal.accent }} />
+                          <User size={16} style={{ color: accent }} />
                           Nome completo *
                         </label>
                         <input
@@ -242,7 +268,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                             fontWeight: 600,
                           }}
                         >
-                          <Mail size={16} style={{ color: animal.accent }} />
+                          <Mail size={16} style={{ color: accent }} />
                           E-mail *
                         </label>
                         <input
@@ -271,7 +297,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                             fontWeight: 600,
                           }}
                         >
-                          <Phone size={16} style={{ color: animal.accent }} />
+                          <Phone size={16} style={{ color: accent }} />
                           Telefone/WhatsApp *
                         </label>
                         <input
@@ -298,7 +324,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                             fontWeight: 600,
                           }}
                         >
-                          <MapPin size={16} style={{ color: animal.accent }} />
+                          <MapPin size={16} style={{ color: accent }} />
                           Cidade *
                         </label>
                         <input
@@ -326,7 +352,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                           fontWeight: 600,
                         }}
                       >
-                        <Home size={16} style={{ color: animal.accent }} />
+                        <Home size={16} style={{ color: accent }} />
                         Endereço *
                       </label>
                       <input
@@ -355,7 +381,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                             fontWeight: 600,
                           }}
                         >
-                          <Heart size={16} style={{ color: animal.accent }} />
+                          <Heart size={16} style={{ color: accent }} />
                           Tem experiência com pets? *
                         </label>
                         <select
@@ -384,7 +410,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                             fontWeight: 600,
                           }}
                         >
-                          <Home size={16} style={{ color: animal.accent }} />
+                          <Home size={16} style={{ color: accent }} />
                           Tipo de moradia *
                         </label>
                         <select
@@ -447,7 +473,7 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                           fontWeight: 600,
                         }}
                       >
-                        <FileText size={16} style={{ color: animal.accent }} />
+                        <FileText size={16} style={{ color: accent }} />
                         Mensagem (opcional)
                       </label>
                       <textarea
@@ -468,8 +494,8 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                     <div
                       className="rounded-xl p-4"
                       style={{
-                        background: `${animal.accent}10`,
-                        border: `1px solid ${animal.accent}30`,
+                        background: `${accent}10`,
+                        border: `1px solid ${accent}30`,
                       }}
                     >
                       <p
@@ -486,21 +512,31 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                       </p>
                     </div>
 
+                    {submitError && (
+                      <p
+                        className="text-red-600 text-sm"
+                        style={{ fontFamily: "Space Grotesk, sans-serif" }}
+                      >
+                        {submitError}
+                      </p>
+                    )}
+
                     {/* Submit button */}
                     <motion.button
                       type="submit"
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      className="w-full text-white py-4 rounded-2xl cursor-pointer border-none shadow-lg"
+                      disabled={isSubmitting}
+                      whileHover={!isSubmitting ? { scale: 1.02 } : {}}
+                      whileTap={!isSubmitting ? { scale: 0.98 } : {}}
+                      className="w-full text-white py-4 rounded-2xl cursor-pointer border-none shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
                       style={{
                         fontFamily: "Syne, sans-serif",
                         fontWeight: 700,
                         fontSize: "1rem",
-                        background: `linear-gradient(135deg, ${animal.accent}, ${animal.accent}CC)`,
-                        boxShadow: `0 8px 25px ${animal.accent}55`,
+                        background: `linear-gradient(135deg, ${accent}, ${accent}CC)`,
+                        boxShadow: `0 8px 25px ${accent}55`,
                       }}
                     >
-                      Enviar solicitação de adoção →
+                      {isSubmitting ? "Enviando..." : "Enviar solicitação de adoção →"}
                     </motion.button>
                   </form>
                 ) : (
@@ -515,9 +551,9 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                       animate={{ scale: 1 }}
                       transition={{ delay: 0.2, type: "spring", bounce: 0.6 }}
                       className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-6"
-                      style={{ background: `${animal.accent}20` }}
+                      style={{ background: `${accent}20` }}
                     >
-                      <CheckCircle size={40} style={{ color: animal.accent }} />
+                      <CheckCircle size={40} style={{ color: accent }} />
                     </motion.div>
                     <h3
                       className="text-[#1A1A1A] mb-3"

@@ -73,7 +73,12 @@ src/
 
 ## Variáveis de ambiente
 
-Para uso com Supabase (autenticação, banco, storage), crie um arquivo `.env.local` na raiz com as variáveis necessárias (ex.: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`). Consulte o `MIGRATION_PLAN.md` para o plano de integração.
+Para uso com Supabase (autenticação, banco, storage), crie um arquivo `.env.local` na raiz. Use a aba **"Publishable and secret API keys"** em Project Settings → API e copie:
+
+- **Project URL** → `NEXT_PUBLIC_SUPABASE_URL`
+- **Publishable key** (`sb_publishable_...`) → `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`
+
+Consulte o `supabase/README.md` para mais detalhes.
 
 ---
 
