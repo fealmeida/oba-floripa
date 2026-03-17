@@ -15,11 +15,14 @@ import { Badge } from "@/components/ui/badge";
 import { Search, MessageSquare, Check, Loader2 } from "lucide-react";
 import { ANIMAL_TYPES } from "@/lib/mock-animals";
 import type { AdoptionRequestStatus } from "@/lib/supabase/types";
-import { updateAdoptionRequest } from "@/app/actions/admin-adoption-requests";
+import {
+  updateAdoptionRequest,
+  type AdoptionRequestListItem,
+} from "@/app/actions/admin-adoption-requests";
 
 /** Gera link wa.me para número brasileiro (aceita (48) 99999-1111 ou 5548999991111) */
-function getWhatsAppUrl(telefone: string): string {
-  const digits = telefone.replace(/\D/g, "");
+function getWhatsAppUrl(phone: string): string {
+  const digits = phone.replace(/\D/g, "");
   const withCountry = digits.length === 10 || digits.length === 11 ? `55${digits}` : digits;
   return `https://wa.me/${withCountry}`;
 }
@@ -31,21 +34,6 @@ function WhatsAppIcon({ size = 16 }: { size?: number }) {
     </svg>
   );
 }
-
-export type AdoptionRequestListItem = {
-  id: string;
-  nome: string;
-  email: string;
-  telefone: string;
-  cidade: string;
-  mensagem: string | null;
-  created_at: string;
-  read: boolean;
-  status: AdoptionRequestStatus;
-  admin_comment: string | null;
-  animal_name: string;
-  animal_type: "cachorro" | "gato";
-};
 
 // UI: Portuguese labels for adoption request status (code is English)
 const STATUS_LABELS: Record<AdoptionRequestStatus, string> = {
@@ -97,8 +85,8 @@ export function AdoptionRequestsList({
 }) {
   const [requests, setRequests] =
     useState<AdoptionRequestListItem[]>(initialRequests);
-  const [searchNome, setSearchNome] = useState("");
-  const [filterTipo, setFilterTipo] = useState<string>("todos");
+  const [searchName, setSearchName] = useState("");
+  const [filterType, setFilterType] = useState<string>("todos");
   const [filterRead, setFilterRead] = useState<string>("all");
   const [filterStatus, setFilterStatus] = useState<string>("todos");
   const [commentEdits, setCommentEdits] = useState<Record<string, string>>({});
@@ -109,23 +97,23 @@ export function AdoptionRequestsList({
 
   const filtered = useMemo(() => {
     return requests.filter((s) => {
-      const matchNome =
-        !searchNome.trim() ||
-        s.nome.toLowerCase().includes(searchNome.trim().toLowerCase());
-      const matchTipo =
-        filterTipo === "todos" || s.animal_type === filterTipo;
+      const matchName =
+        !searchName.trim() ||
+        s.name.toLowerCase().includes(searchName.trim().toLowerCase());
+      const matchType =
+        filterType === "todos" || s.animal_type === filterType;
       const matchRead =
         filterRead === "all" ||
         (filterRead === "read" && s.read) ||
         (filterRead === "unread" && !s.read);
       const matchStatus =
         filterStatus === "todos" || s.status === filterStatus;
-      return matchNome && matchTipo && matchRead && matchStatus;
+      return matchName && matchType && matchRead && matchStatus;
     });
   }, [
     requests,
-    searchNome,
-    filterTipo,
+    searchName,
+    filterType,
     filterRead,
     filterStatus,
   ]);
@@ -232,14 +220,14 @@ export function AdoptionRequestsList({
           <Input
             type="search"
             placeholder="Buscar por nome do solicitante..."
-            value={searchNome}
-            onChange={(e) => setSearchNome(e.target.value)}
+            value={searchName}
+            onChange={(e) => setSearchName(e.target.value)}
             className="pl-9 rounded-full border-[#E5E7EB] bg-white text-[#1A1A1A] placeholder:text-[#888]"
             aria-label="Buscar por nome"
           />
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <Select value={filterTipo} onValueChange={setFilterTipo}>
+          <Select value={filterType} onValueChange={setFilterType}>
             <SelectTrigger
               className="rounded-full border-[#E5E7EB] bg-white text-[#1A1A1A]"
               aria-label="Filtrar por tipo do animal"
@@ -299,13 +287,13 @@ export function AdoptionRequestsList({
                 ? "Nenhuma solicitação ainda."
                 : "Nenhuma solicitação encontrada com os filtros aplicados."}
             </p>
-            {(searchNome || filterTipo !== "todos" || filterRead !== "all" || filterStatus !== "todos") && (
+            {(searchName || filterType !== "todos" || filterRead !== "all" || filterStatus !== "todos") && (
               <Button
                 variant="outline"
                 className="rounded-full border-[#FF5500] text-[#FF5500] hover:bg-[#FF5500]/10"
                 onClick={() => {
-                  setSearchNome("");
-                  setFilterTipo("todos");
+                  setSearchName("");
+                  setFilterType("todos");
                   setFilterRead("all");
                   setFilterStatus("todos");
                 }}
@@ -333,7 +321,7 @@ export function AdoptionRequestsList({
                       className="text-[#1A1A1A] font-bold break-words"
                       style={{ fontFamily: "Syne, sans-serif", lineHeight: 1.3 }}
                     >
-                      {s.nome}
+                      {s.name}
                     </h3>
                     <Badge
                       variant="secondary"
@@ -362,25 +350,25 @@ export function AdoptionRequestsList({
                   <p className="text-[#555]">
                     <span className="text-[#777]">Telefone:</span>{" "}
                     <a
-                      href={getWhatsAppUrl(s.telefone)}
+                      href={getWhatsAppUrl(s.phone)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="inline-flex items-center gap-1.5 text-[#25D366] hover:text-[#20BD5C] font-medium underline underline-offset-2"
-                      aria-label={`Abrir WhatsApp de ${s.nome}`}
+                      aria-label={`Abrir WhatsApp de ${s.name}`}
                     >
                       <WhatsAppIcon size={16} />
-                      {s.telefone}
+                      {s.phone}
                     </a>
                   </p>
                   <p className="text-[#555] sm:col-span-2">
-                    <span className="text-[#777]">Cidade:</span> {s.cidade}
+                    <span className="text-[#777]">Cidade:</span> {s.city}
                   </p>
                 </div>
-                {s.mensagem && (
+                {s.message && (
                   <p className="text-[#555] text-sm border-l-2 border-[#E5E7EB] pl-3">
-                    {s.mensagem.length > 120
-                      ? `${s.mensagem.slice(0, 120)}...`
-                      : s.mensagem}
+                    {s.message.length > 120
+                      ? `${s.message.slice(0, 120)}...`
+                      : s.message}
                   </p>
                 )}
 

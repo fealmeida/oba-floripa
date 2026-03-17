@@ -9,12 +9,12 @@ import type {
 export type AdoptionRequestListItem = {
   id: string
   animal_id: string
-  nome: string
+  name: string
   email: string
-  telefone: string
-  endereco: string
-  cidade: string
-  mensagem: string | null
+  phone: string
+  address: string
+  city: string
+  message: string | null
   created_at: string
   updated_at: string
   read: boolean
@@ -36,12 +36,12 @@ export async function fetchAdoptionRequests(): Promise<FetchAdoptionRequestsResu
       `
       id,
       animal_id,
-      nome,
+      name,
       email,
-      telefone,
-      endereco,
-      cidade,
-      mensagem,
+      phone,
+      address,
+      city,
+      message,
       created_at,
       updated_at,
       read,
@@ -64,12 +64,12 @@ export async function fetchAdoptionRequests(): Promise<FetchAdoptionRequestsResu
     return {
       id: row.id,
       animal_id: row.animal_id,
-      nome: row.nome,
+      name: row.name,
       email: row.email,
-      telefone: row.telefone,
-      endereco: row.endereco,
-      cidade: row.cidade,
-      mensagem: row.mensagem ?? null,
+      phone: row.phone,
+      address: row.address,
+      city: row.city,
+      message: row.message ?? null,
       created_at: row.created_at,
       updated_at: row.updated_at,
       read: row.read ?? false,
