@@ -2,12 +2,22 @@
 import { motion, useInView } from "motion/react";
 import { useRef, useState, useCallback, useEffect } from "react";
 import Image from "next/image";
-import { MapPin, Calendar, Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  MapPin,
+  Calendar,
+  Heart,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import useEmblaCarousel from "embla-carousel-react";
 import { PawPrint, StarIllustration, BoneIllustration } from "./Illustrations";
 import { AdoptionModal } from "./AdoptionModal";
 import { createClient } from "@/lib/supabase/client";
-import { mapAnimalRowToUI, getColorsForAnimal, type AnimalForUI } from "@/lib/supabase";
+import {
+  mapAnimalRowToUI,
+  getColorsForAnimal,
+  type AnimalForUI,
+} from "@/lib/supabase";
 
 /** Emoji por tipo: gato → 🐱, cachorro → patinhas 🐾🐾🐾 */
 function getEmojiByType(type: string): string {
@@ -24,7 +34,11 @@ function AnimalCard({
   index: number;
   onAdopt: (animal: AnimalForUI) => void;
 }) {
-  const { tagColor, cardBg, accent } = getColorsForAnimal(animal.tag, animal.type);
+  const { tagColor, cardBg, accent } = getColorsForAnimal(
+    animal.id,
+    animal.tag,
+    animal.type,
+  );
   const ref = useRef(null);
   const inView = useInView(ref, {
     once: true,
@@ -42,17 +56,26 @@ function AnimalCard({
         ease: [0.16, 1, 0.3, 1],
       }}
       whileHover={{ scale: 1.02 }}
-      className={`group bg-gradient-to-b ${cardBg} rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-500 border border-white`}
+      className={`group flex flex-col h-[500px] bg-gradient-to-b ${cardBg} rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-500 border border-white`}
     >
-      {/* Image */}
-      <div className="relative h-56 overflow-hidden">
-        <Image
-          src={animal.img}
-          alt={animal.name}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-          className="object-cover transition-transform duration-700 group-hover:scale-110"
-        />
+      {/* Image - altura fixa */}
+      <div className="relative h-64 shrink-0 overflow-hidden">
+        <div
+          className="absolute inset-0"
+          style={{
+            transform: `scale(${Math.max(1, animal.img_zoom ?? 1)})`,
+            transformOrigin: animal.img_position || "50% 40%",
+          }}
+        >
+          <Image
+            src={animal.img}
+            alt={animal.name}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
+            style={{ objectPosition: animal.img_position || "50% 40%" }}
+          />
+        </div>
         {/* Color overlay on hover */}
         <div
           className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
@@ -84,7 +107,7 @@ function AnimalCard({
           whileTap={{ scale: 0.8 }}
           onClick={() => setLiked(!liked)}
           className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center cursor-pointer border-none shadow-md transition-all duration-300"
-            style={{
+          style={{
             background: liked ? accent : "white",
           }}
         >
@@ -96,9 +119,9 @@ function AnimalCard({
         </motion.button>
       </div>
 
-      {/* Info */}
-      <div className="p-6">
-        <div className="flex items-start justify-between mb-2">
+      {/* Info - ocupa o resto e mantém botão no fim */}
+      <div className="flex flex-col flex-1 min-h-0 p-6">
+        <div className="flex items-start justify-between mb-2 shrink-0">
           <h3
             className="text-[#1A1A1A] flex items-center gap-2"
             style={{
@@ -122,11 +145,8 @@ function AnimalCard({
           </span>
         </div>
 
-        <div className="flex items-center gap-4 mb-4">
-          <div
-            className="flex items-center gap-1"
-            style={{ color: accent }}
-          >
+        <div className="flex items-center gap-4 mb-4 shrink-0">
+          <div className="flex items-center gap-1" style={{ color: accent }}>
             <Calendar size={13} />
             <span
               style={{
@@ -153,7 +173,7 @@ function AnimalCard({
         </div>
 
         <p
-          className="text-[#555] mb-5"
+          className="text-[#555] mb-5 flex-1 min-h-[3.5rem] line-clamp-3"
           style={{
             fontFamily: "var(--font-sans)",
             fontSize: "0.875rem",
@@ -167,7 +187,7 @@ function AnimalCard({
           whileHover={{ scale: 1.03 }}
           whileTap={{ scale: 0.97 }}
           onClick={() => onAdopt(animal)}
-          className="w-full text-white py-3 rounded-2xl cursor-pointer border-none transition-all duration-300 shadow-md"
+          className="w-full text-white py-3 rounded-2xl cursor-pointer border-none transition-all duration-300 shadow-md shrink-0"
           style={{
             fontFamily: "var(--font-heading)",
             fontWeight: 700,
@@ -192,7 +212,9 @@ export function Animals() {
   const [animals, setAnimals] = useState<AnimalForUI[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [selectedAnimal, setSelectedAnimal] = useState<AnimalForUI | null>(null);
+  const [selectedAnimal, setSelectedAnimal] = useState<AnimalForUI | null>(
+    null,
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
@@ -379,48 +401,47 @@ export function Animals() {
             </div>
           ) : (
             <>
-          <div className="overflow-hidden" ref={emblaRef}>
-            <div className="flex gap-6 touch-pan-y" style={{ backfaceVisibility: "hidden" }}>
-              {animals.map((a, i) => (
+              <div className="overflow-hidden" ref={emblaRef}>
                 <div
-                  key={a.id}
-                  className="flex-[0_0_100%] sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)] min-w-0 pl-2 first:pl-0"
+                  className="flex gap-6 touch-pan-y"
+                  style={{ backfaceVisibility: "hidden" }}
                 >
-                  <AnimalCard
-                    animal={a}
-                    index={i}
-                    onAdopt={handleAdopt}
-                  />
+                  {animals.map((a, i) => (
+                    <div
+                      key={a.id}
+                      className="flex-[0_0_100%] sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)] min-w-0 pl-2 first:pl-0"
+                    >
+                      <AnimalCard animal={a} index={i} onAdopt={handleAdopt} />
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
 
-          {/* Botões prev/next */}
-          <div className="flex items-center justify-center gap-4 mt-8">
-            <motion.button
-              type="button"
-              onClick={scrollPrev}
-              disabled={!canScrollPrev}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-12 h-12 rounded-full bg-white border-2 border-[#FF5500] text-[#FF5500] flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-md hover:bg-[#FF5500] hover:text-white transition-colors"
-              aria-label="Anterior"
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </motion.button>
-            <motion.button
-              type="button"
-              onClick={scrollNext}
-              disabled={!canScrollNext}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="w-12 h-12 rounded-full bg-white border-2 border-[#FF5500] text-[#FF5500] flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-md hover:bg-[#FF5500] hover:text-white transition-colors"
-              aria-label="Próximo"
-            >
-              <ChevronRight className="w-6 h-6" />
-            </motion.button>
-          </div>
+              {/* Botões prev/next */}
+              <div className="flex items-center justify-center gap-4 mt-8">
+                <motion.button
+                  type="button"
+                  onClick={scrollPrev}
+                  disabled={!canScrollPrev}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-12 h-12 rounded-full bg-white border-2 border-[#FF5500] text-[#FF5500] flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-md hover:bg-[#FF5500] hover:text-white transition-colors"
+                  aria-label="Anterior"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </motion.button>
+                <motion.button
+                  type="button"
+                  onClick={scrollNext}
+                  disabled={!canScrollNext}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="w-12 h-12 rounded-full bg-white border-2 border-[#FF5500] text-[#FF5500] flex items-center justify-center cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed shadow-md hover:bg-[#FF5500] hover:text-white transition-colors"
+                  aria-label="Próximo"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </motion.button>
+              </div>
             </>
           )}
         </div>

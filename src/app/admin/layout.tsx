@@ -1,16 +1,22 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
+import { createClient } from '@/lib/supabase/server'
+import { logout } from '@/app/actions/auth'
 
 export const metadata: Metadata = {
   title: 'Admin – OBA Floripa',
   description: 'Painel de gestão de animais para adoção.',
 }
 
-export default function AdminLayout({
+export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const supabase = await createClient()
+  const { data } = await supabase.auth.getClaims()
+  const isLoggedIn = Boolean(data?.claims?.sub)
+
   return (
     <div className="min-h-screen bg-[#FFF5EC]" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
       {/* Barra superior com identidade do site */}
@@ -23,12 +29,24 @@ export default function AdminLayout({
           >
             Admin – OBA Floripa
           </h1>
-          <Link
-            href="/"
-            className="text-[#FF5500] hover:text-[#FF5500]/80 font-semibold text-sm uppercase tracking-widest transition-colors"
-          >
-            ← Voltar ao site
-          </Link>
+          <div className="flex items-center gap-4">
+            {isLoggedIn && (
+              <form action={logout}>
+                <button
+                  type="submit"
+                  className="text-[#555] hover:text-[#1A1A1A] font-semibold text-sm uppercase tracking-widest transition-colors"
+                >
+                  Sair
+                </button>
+              </form>
+            )}
+            <Link
+              href="/"
+              className="text-[#FF5500] hover:text-[#FF5500]/80 font-semibold text-sm uppercase tracking-widest transition-colors"
+            >
+              ← Voltar ao site
+            </Link>
+          </div>
         </div>
       </header>
 

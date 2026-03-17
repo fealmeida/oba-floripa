@@ -23,8 +23,10 @@ interface Animal {
   gender: string;
   tag?: string | null;
   emoji?: string;
-  accent?: string; // opcional: se não vier, derivamos com getColorsForAnimal(tag, type)
+  accent?: string;
   img: string;
+  img_position?: string | null;
+  img_zoom?: number | null;
 }
 
 /** Emoji por tipo: gato → 🐱, cachorro → patinhas 🐾🐾🐾 */
@@ -41,7 +43,7 @@ interface AdoptionModalProps {
 
 export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
   const accent = animal
-    ? getColorsForAnimal(animal.tag ?? null, animal.type).accent
+    ? getColorsForAnimal(animal.id, animal.tag ?? null, animal.type).accent
     : "#FF5500";
   const [formData, setFormData] = useState({
     name: "",
@@ -152,13 +154,22 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
                 {/* Animal info */}
                 <div className="flex items-center gap-4">
                   <div className="relative w-20 h-20 rounded-2xl overflow-hidden border-4 border-white/30 shadow-lg shrink-0">
-                    <Image
-                      src={animal.img}
-                      alt={animal.name}
-                      width={80}
-                      height={80}
-                      className="object-cover"
-                    />
+                    <div
+                      className="absolute inset-0"
+                      style={{
+                        transform: `scale(${Math.max(1, animal.img_zoom ?? 1)})`,
+                        transformOrigin: animal.img_position || "50% 40%",
+                      }}
+                    >
+                      <Image
+                        src={animal.img}
+                        alt={animal.name}
+                        fill
+                        className="object-cover"
+                        style={{ objectPosition: animal.img_position || "50% 40%" }}
+                        sizes="80px"
+                      />
+                    </div>
                   </div>
                   <div>
                     <p

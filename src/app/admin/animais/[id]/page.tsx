@@ -1,6 +1,7 @@
 import { notFound } from 'next/navigation'
 import { AnimalForm } from '@/components/admin/AnimalForm'
-import { getInitialAnimals } from '@/lib/mock-animals'
+import { createClient } from '@/lib/supabase/server'
+import type { AdminAnimal } from '@/lib/supabase/types'
 
 type Props = {
   params: Promise<{ id: string }>
@@ -8,23 +9,28 @@ type Props = {
 
 export default async function EditAnimalPage({ params }: Props) {
   const { id } = await params
-  const idNum = Number(id)
-  if (Number.isNaN(idNum)) notFound()
 
-  const animals = getInitialAnimals()
-  const animal = animals.find((a) => a.id === idNum)
-  if (!animal) notFound()
+  const supabase = await createClient()
+  const { data: row, error } = await supabase
+    .from('animais')
+    .select('id, name, age, type, gender, desc, img, img_position, img_zoom, tag, status')
+    .eq('id', id)
+    .single()
 
-  const initialValues = {
-    id: animal.id,
-    name: animal.name,
-    age: animal.age,
-    type: animal.type,
-    gender: animal.gender,
-    desc: animal.desc,
-    img: animal.img,
-    tag: animal.tag,
-    status: animal.status,
+  if (error || !row) notFound()
+
+  const initialValues: AdminAnimal = {
+    id: row.id,
+    name: row.name,
+    age: row.age,
+    type: row.type,
+    gender: row.gender,
+    desc: row.desc,
+    img: row.img,
+    img_position: row.img_position ?? null,
+    img_zoom: row.img_zoom ?? 1,
+    tag: row.tag,
+    status: row.status,
   }
 
   return <AnimalForm initialValues={initialValues} mode="edit" />

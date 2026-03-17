@@ -42,6 +42,29 @@ No Dashboard: **Project Settings** → **API**. Use a aba **"Publishable and sec
 
 A chave legacy "anon" ainda funciona no Supabase; este projeto usa apenas a Publishable key.
 
+## Autenticação (admin)
+
+Para proteger o painel `/admin` com Supabase Auth, configure no Dashboard:
+
+### 1. Criar um usuário (email + senha)
+
+1. Menu **Authentication** → **Users**.
+2. **Add user** (ou "Add new user").
+3. Preencha **Email** e **Password** — serão as credenciais para acessar `/admin/login`.
+4. Confirme a criação.
+
+### 2. URLs de redirecionamento
+
+O Supabase só redireciona para URLs cadastradas. Sem isso, o login falha após o callback.
+
+1. Menu **Authentication** → **URL Configuration**.
+2. Em **Redirect URLs**, adicione (uma por linha):
+   - Desenvolvimento: `http://localhost:3000/auth/callback`
+   - Produção: `https://seu-dominio.com/auth/callback` (troque pelo domínio real).
+3. Salve.
+
+O app troca o `code` da URL por sessão em `src/app/auth/callback/route.ts` e redireciona para `/admin`.
+
 ## Tipos no código
 
 Os tipos TypeScript estão em `src/lib/supabase/types.ts`. Para converter uma linha do banco no formato da UI (cards, modal), use:

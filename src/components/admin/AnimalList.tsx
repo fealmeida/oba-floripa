@@ -1,8 +1,9 @@
-'use client'
+"use client";
 
-import { useState, useMemo } from 'react'
-import Link from 'next/link'
-import Image from 'next/image'
+import { useState, useMemo, useEffect } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -12,52 +13,72 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
+} from "@/components/ui/alert-dialog";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Badge } from '@/components/ui/badge'
-import type { Animal } from '@/lib/mock-animals'
-import { ANIMAL_TYPES } from '@/lib/mock-animals'
-import { Pencil, Trash2, Plus, Search } from 'lucide-react'
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import type { AdminAnimal } from "@/lib/supabase/types";
+import { ANIMAL_TYPES } from "@/lib/mock-animals";
+import { deleteAnimal } from "@/app/actions/animais";
+import { Pencil, Trash2, Plus, Search } from "lucide-react";
 
-const STATUS_LABELS: Record<Animal['status'], string> = {
-  disponível: 'Disponível',
-  adotado: 'Adotado',
-  reservado: 'Reservado',
-}
+const STATUS_LABELS: Record<AdminAnimal["status"], string> = {
+  disponível: "Disponível",
+  adotado: "Adotado",
+  reservado: "Reservado",
+};
 
-export function AnimalList({ initialAnimals }: { initialAnimals: Animal[] }) {
-  const [animals, setAnimals] = useState<Animal[]>(initialAnimals)
-  const [searchName, setSearchName] = useState('')
-  const [filterType, setFilterType] = useState<string>('todos')
-  const [deleteTarget, setDeleteTarget] = useState<Animal | null>(null)
+export function AnimalList({
+  initialAnimals,
+}: {
+  initialAnimals: AdminAnimal[];
+}) {
+  const router = useRouter();
+  const [animals, setAnimals] = useState<AdminAnimal[]>(initialAnimals);
+  const [searchName, setSearchName] = useState("");
+  const [filterType, setFilterType] = useState<string>("todos");
+  const [deleteTarget, setDeleteTarget] = useState<AdminAnimal | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  useEffect(() => {
+    setAnimals(initialAnimals);
+  }, [initialAnimals]);
 
   const filtered = useMemo(() => {
     return animals.filter((a) => {
-      const matchName = !searchName.trim() || a.name.toLowerCase().includes(searchName.trim().toLowerCase())
-      const matchType = filterType === 'todos' || a.type === filterType
-      return matchName && matchType
-    })
-  }, [animals, searchName, filterType])
+      const matchName =
+        !searchName.trim() ||
+        a.name.toLowerCase().includes(searchName.trim().toLowerCase());
+      const matchType = filterType === "todos" || a.type === filterType;
+      return matchName && matchType;
+    });
+  }, [animals, searchName, filterType]);
 
-  const handleDelete = (animal: Animal) => {
-    setDeleteTarget(animal)
-  }
+  const handleDelete = (animal: AdminAnimal) => {
+    setDeleteTarget(animal);
+  };
 
-  const confirmDelete = () => {
-    if (deleteTarget) {
-      setAnimals((prev) => prev.filter((a) => a.id !== deleteTarget.id))
-      setDeleteTarget(null)
-    }
-  }
+  const confirmDelete = async () => {
+    if (!deleteTarget) return;
+    setIsDeleting(true);
+    const result = await deleteAnimal(deleteTarget.id);
+    setIsDeleting(false);
+    setDeleteTarget(null);
+    if (result.success) router.refresh();
+  };
 
   return (
     <div className="space-y-6">
@@ -65,14 +86,14 @@ export function AnimalList({ initialAnimals }: { initialAnimals: Animal[] }) {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <h2
           className="text-[#1A1A1A] text-2xl font-bold"
-          style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800 }}
+          style={{ fontFamily: "Syne, sans-serif", fontWeight: 800 }}
         >
           Animais para adoção
         </h2>
         <Link href="/admin/animais/novo">
           <Button
             className="rounded-full bg-[#FF5500] hover:bg-[#FF5500]/90 text-white border-0"
-            style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700 }}
+            style={{ fontFamily: "Syne, sans-serif", fontWeight: 700 }}
           >
             <Plus className="size-4" />
             Novo animal
@@ -83,7 +104,10 @@ export function AnimalList({ initialAnimals }: { initialAnimals: Animal[] }) {
       {/* Busca e filtros */}
       <div className="flex flex-col sm:flex-row gap-4">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#777]" aria-hidden />
+          <Search
+            className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-[#777]"
+            aria-hidden
+          />
           <Input
             type="search"
             placeholder="Buscar por nome..."
@@ -112,18 +136,21 @@ export function AnimalList({ initialAnimals }: { initialAnimals: Animal[] }) {
       {filtered.length === 0 ? (
         <Card className="border-[#E5E7EB] bg-white rounded-2xl">
           <CardContent className="py-12 text-center">
-            <p className="text-[#555] mb-2" style={{ fontFamily: 'Space Grotesk, sans-serif' }}>
+            <p
+              className="text-[#555] mb-2"
+              style={{ fontFamily: "Space Grotesk, sans-serif" }}
+            >
               {animals.length === 0
-                ? 'Nenhum animal cadastrado ainda.'
-                : 'Nenhum animal encontrado com os filtros aplicados.'}
+                ? "Nenhum animal cadastrado ainda."
+                : "Nenhum animal encontrado com os filtros aplicados."}
             </p>
-            {(searchName || filterType !== 'todos') && (
+            {(searchName || filterType !== "todos") && (
               <Button
                 variant="outline"
                 className="rounded-full border-[#FF5500] text-[#FF5500] hover:bg-[#FF5500]/10"
                 onClick={() => {
-                  setSearchName('')
-                  setFilterType('todos')
+                  setSearchName("");
+                  setFilterType("todos");
                 }}
               >
                 Limpar filtros
@@ -136,20 +163,29 @@ export function AnimalList({ initialAnimals }: { initialAnimals: Animal[] }) {
           {filtered.map((animal) => (
             <Card
               key={animal.id}
-              className="border-[#E5E7EB] bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
+              className="border-[#E5E7EB] bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
             >
-              <div className="relative h-48 bg-[#F9F9F9]">
-                <Image
-                  src={animal.img}
-                  alt={animal.name}
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                />
+              <div className="relative h-64 bg-[#F9F9F9] overflow-hidden">
+                <div
+                  className="absolute inset-0"
+                  style={{
+                    transform: `scale(${Math.max(1, animal.img_zoom ?? 1)})`,
+                    transformOrigin: animal.img_position || "50% 40%",
+                  }}
+                >
+                  <Image
+                    src={animal.img}
+                    alt={animal.name}
+                    fill
+                    className="object-cover"
+                    style={{ objectPosition: animal.img_position || "50% 40%" }}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  />
+                </div>
                 {animal.tag && (
                   <Badge
-                    className="absolute top-3 left-3 rounded-full text-white border-0 text-xs font-semibold uppercase tracking-widest"
-                    style={{ backgroundColor: '#FF5500' }}
+                    className="absolute top-4 left-4 rounded-full text-white border-0 text-xs font-semibold uppercase tracking-widest"
+                    style={{ backgroundColor: "#FF5500" }}
                   >
                     {animal.tag}
                   </Badge>
@@ -159,7 +195,7 @@ export function AnimalList({ initialAnimals }: { initialAnimals: Animal[] }) {
                 <div className="flex items-start justify-between gap-2">
                   <h3
                     className="text-[#1A1A1A] text-lg font-bold truncate"
-                    style={{ fontFamily: 'Syne, sans-serif', fontWeight: 800 }}
+                    style={{ fontFamily: "Syne, sans-serif", fontWeight: 800 }}
                   >
                     {animal.name}
                   </h3>
@@ -167,13 +203,19 @@ export function AnimalList({ initialAnimals }: { initialAnimals: Animal[] }) {
                     variant="secondary"
                     className="rounded-full text-xs font-medium text-[#555] bg-[#E5E7EB] border-0"
                   >
-                    {animal.gender === 'fêmea' ? 'Fêmea' : 'Macho'}
+                    {animal.gender === "fêmea" ? "Fêmea" : "Macho"}
                   </Badge>
                 </div>
-                <p className="text-[#777] text-sm">{animal.age} · {animal.type.charAt(0).toUpperCase() + animal.type.slice(1)} · {STATUS_LABELS[animal.status]}</p>
+                <p className="text-[#777] text-sm">
+                  {animal.age} ·{" "}
+                  {animal.type.charAt(0).toUpperCase() + animal.type.slice(1)} ·{" "}
+                  {STATUS_LABELS[animal.status]}
+                </p>
               </CardHeader>
               <CardContent className="py-0">
-                <p className="text-[#555] text-sm line-clamp-2">{animal.desc}</p>
+                <p className="text-[#555] text-sm line-clamp-2">
+                  {animal.desc}
+                </p>
               </CardContent>
               <CardFooter className="pt-4 flex gap-2">
                 <Link href={`/admin/animais/${animal.id}`} className="flex-1">
@@ -181,7 +223,10 @@ export function AnimalList({ initialAnimals }: { initialAnimals: Animal[] }) {
                     variant="outline"
                     size="sm"
                     className="w-full rounded-full border-[#FF5500] text-[#FF5500] hover:bg-[#FF5500]/10"
-                    style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600 }}
+                    style={{
+                      fontFamily: "Space Grotesk, sans-serif",
+                      fontWeight: 600,
+                    }}
                   >
                     <Pencil className="size-4" />
                     Editar
@@ -203,32 +248,39 @@ export function AnimalList({ initialAnimals }: { initialAnimals: Animal[] }) {
       )}
 
       {/* Modal de confirmação de exclusão */}
-      <AlertDialog open={!!deleteTarget} onOpenChange={(open) => !open && setDeleteTarget(null)}>
+      <AlertDialog
+        open={!!deleteTarget}
+        onOpenChange={(open) => !open && setDeleteTarget(null)}
+      >
         <AlertDialogContent className="rounded-2xl border-[#E5E7EB]">
           <AlertDialogHeader>
-            <AlertDialogTitle style={{ fontFamily: 'Syne, sans-serif' }}>
+            <AlertDialogTitle style={{ fontFamily: "Syne, sans-serif" }}>
               Excluir animal?
             </AlertDialogTitle>
             <AlertDialogDescription>
               {deleteTarget && (
                 <>
-                  Tem certeza que deseja excluir <strong>{deleteTarget.name}</strong>? Esta ação não
-                  pode ser desfeita (em modo mock, o dado volta ao recarregar a página).
+                  Tem certeza que deseja excluir{" "}
+                  <strong>{deleteTarget.name}</strong>? Esta ação não pode ser
+                  desfeita.
                 </>
               )}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="rounded-full">Cancelar</AlertDialogCancel>
+            <AlertDialogCancel className="rounded-full" disabled={isDeleting}>
+              Cancelar
+            </AlertDialogCancel>
             <AlertDialogAction
               onClick={confirmDelete}
               className="rounded-full bg-[#d4183d] hover:bg-[#d4183d]/90"
+              disabled={isDeleting}
             >
-              Excluir
+              {isDeleting ? "Excluindo..." : "Excluir"}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
     </div>
-  )
+  );
 }

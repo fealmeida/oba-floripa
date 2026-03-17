@@ -28,6 +28,8 @@ export interface Database {
           gender: AnimalGender
           desc: string
           img: string
+          img_position: string | null
+          img_zoom: number
           tag: string | null
           status: AnimalStatus
           created_at: string
@@ -41,6 +43,8 @@ export interface Database {
           gender: AnimalGender
           desc: string
           img: string
+          img_position?: string | null
+          img_zoom?: number
           tag?: string | null
           status?: AnimalStatus
           created_at?: string
@@ -54,6 +58,8 @@ export interface Database {
           gender?: AnimalGender
           desc?: string
           img?: string
+          img_position?: string | null
+          img_zoom?: number
           tag?: string | null
           status?: AnimalStatus
           created_at?: string
@@ -127,6 +133,12 @@ export type AnimalRow = Database['public']['Tables']['animais']['Row']
 
 /** Payload para inserir animal (Insert) */
 export type AnimalInsert = Database['public']['Tables']['animais']['Insert']
+
+/** Payload para atualizar animal (Update) */
+export type AnimalUpdate = Database['public']['Tables']['animais']['Update']
+
+/** Animal no admin (sem timestamps); id é UUID string do Supabase */
+export type AdminAnimal = Omit<AnimalRow, 'created_at' | 'updated_at'>
 
 /** Linha da tabela solicitacoes_adocao (Row) */
 export type SolicitacaoRow = Database['public']['Tables']['solicitacoes_adocao']['Row']

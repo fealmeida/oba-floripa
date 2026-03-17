@@ -1,77 +1,113 @@
-import type { AnimalRow } from './types'
+import type { AnimalRow } from "./types";
 
-/** Cores por tag (derivadas no código) */
-const TAG_COLORS: Record<string, string> = {
-  Destaque: '#FF5500',
-  Nova: '#10B981',
-  Urgente: '#EF4444',
-  Popular: '#FFB800',
+/** Paletas de cores para cards - independentes da tag, escolhidas por id (aleatório estável) */
+const CARD_PALETTES: Array<{
+  tagColor: string;
+  cardBg: string;
+  accent: string;
+}> = [
+  {
+    tagColor: "#FF5500",
+    cardBg: "from-[#FFF0E6] to-[#FFE4CC]",
+    accent: "#FF5500",
+  },
+  {
+    tagColor: "#10B981",
+    cardBg: "from-[#E6FFF5] to-[#CCFFE8]",
+    accent: "#10B981",
+  },
+  {
+    tagColor: "#EF4444",
+    cardBg: "from-[#FFF0E6] to-[#FFDDD5]",
+    accent: "#EF4444",
+  },
+  {
+    tagColor: "#FFB800",
+    cardBg: "from-[#FFFBE6] to-[#FFF2CC]",
+    accent: "#FFB800",
+  },
+  {
+    tagColor: "#8B5CF6",
+    cardBg: "from-[#F0E6FF] to-[#E4CCFF]",
+    accent: "#8B5CF6",
+  },
+  {
+    tagColor: "#EC4899",
+    cardBg: "from-[#FFF0F6] to-[#FFCCE6]",
+    accent: "#EC4899",
+  },
+  {
+    tagColor: "#06B6D4",
+    cardBg: "from-[#E6F7FF] to-[#CCF0FF]",
+    accent: "#06B6D4",
+  },
+  {
+    tagColor: "#F97316",
+    cardBg: "from-[#FFF7ED] to-[#FFEDD5]",
+    accent: "#F97316",
+  },
+];
+
+/**
+ * Hash simples e estável para string ou number (id do animal).
+ * Usado para escolher paleta de cores sempre igual para o mesmo animal.
+ */
+function hashId(id: string | number): number {
+  const s = String(id);
+  let h = 0;
+  for (let i = 0; i < s.length; i++) {
+    const c = s.charCodeAt(i);
+    h = (h << 5) - h + c;
+    h = h & h;
+  }
+  return Math.abs(h);
 }
-
-/** Accent por tipo (derivado no código) */
-const ACCENT_BY_TYPE: Record<string, string> = {
-  cachorro: '#FF5500',
-  gato: '#10B981',
-}
-
-/** Card background por tag (derivado no código) */
-const CARD_BG_BY_TAG: Record<string, string> = {
-  Destaque: 'from-[#FFF0E6] to-[#FFE4CC]',
-  Nova: 'from-[#E6FFF5] to-[#CCFFE8]',
-  Urgente: 'from-[#FFF0E6] to-[#FFDDD5]',
-  Popular: 'from-[#FFFBE6] to-[#FFF2CC]',
-}
-
-/** Card background por tipo quando não há tag */
-const CARD_BG_BY_TYPE: Record<string, string> = {
-  cachorro: 'from-[#F0E6FF] to-[#E4CCFF]',
-  gato: 'from-[#FFF0F6] to-[#FFCCE6]',
-}
-
-const DEFAULT_CARD_BG = 'from-[#FFF5EC] to-[#FFE4CC]'
 
 /**
  * Formato esperado pelos componentes da home (Animals, AdoptionModal).
- * id pode ser string (UUID) ou number (mock).
- * Cores (tagColor, cardBg, accent) não vêm do banco; use getColorsForAnimal(tag, type).
+ * Cores vêm de getColorsForAnimal(animal.id, animal.tag, animal.type) — estáveis por id.
  */
 export type AnimalForUI = {
-  id: string | number
-  name: string
-  age: string
-  type: 'cachorro' | 'gato'
-  gender: 'fêmea' | 'macho'
-  desc: string
-  img: string
-  tag: string | null
-  status?: AnimalRow['status']
-}
+  id: string | number;
+  name: string;
+  age: string;
+  type: "cachorro" | "gato";
+  gender: "fêmea" | "macho";
+  desc: string;
+  img: string;
+  img_position?: string | null;
+  img_zoom?: number | null;
+  tag: string | null;
+  status?: AnimalRow["status"];
+};
 
-/** Cores derivadas apenas no código (tag + type), não do banco */
 export type AnimalColors = {
-  tagColor: string
-  cardBg: string
-  accent: string
-}
+  tagColor: string;
+  cardBg: string;
+  accent: string;
+};
 
 /**
- * Retorna as cores do card/modal a partir de tag e type (regras só no código).
+ * Retorna as cores do card/modal: independentes da tag, estáveis por animal (por id).
+ * A tag só define o texto do badge; a cor do card vem da paleta “aleatória” por id.
  */
 export function getColorsForAnimal(
+  id: string | number,
   tag: string | null,
-  type: string
+  type: string,
 ): AnimalColors {
-  const tagColor = tag ? TAG_COLORS[tag] ?? '#8B5CF6' : '#8B5CF6'
-  const accent = ACCENT_BY_TYPE[type] ?? '#FF5500'
-  const cardBg = tag
-    ? CARD_BG_BY_TAG[tag] ?? CARD_BG_BY_TYPE[type] ?? DEFAULT_CARD_BG
-    : CARD_BG_BY_TYPE[type] ?? DEFAULT_CARD_BG
-  return { tagColor, cardBg, accent }
+  const index = hashId(id) % CARD_PALETTES.length;
+  const palette = CARD_PALETTES[index];
+  return {
+    tagColor: palette.tagColor,
+    cardBg: palette.cardBg,
+    accent: palette.accent,
+  };
 }
 
 /**
  * Converte uma linha da tabela `animais` (Supabase) para o formato da UI.
- * Cores ficam apenas no código; use getColorsForAnimal(animal.tag, animal.type) ao renderizar.
+ * Cores ficam apenas no código; use getColorsForAnimal(animal.id, animal.tag, animal.type) ao renderizar.
  */
 export function mapAnimalRowToUI(row: AnimalRow): AnimalForUI {
   return {
@@ -82,7 +118,9 @@ export function mapAnimalRowToUI(row: AnimalRow): AnimalForUI {
     gender: row.gender,
     desc: row.desc,
     img: row.img,
+    img_position: row.img_position ?? null,
+    img_zoom: row.img_zoom ?? 1,
     tag: row.tag,
     status: row.status,
-  }
+  };
 }
