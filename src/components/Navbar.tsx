@@ -1,10 +1,12 @@
 'use client'
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 
 export function Navbar() {
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -129,6 +131,19 @@ export function Navbar() {
               style={{ fontFamily: "Syne, sans-serif", fontWeight: 700, fontSize: "1.1rem" }}
             >
               💛 Doe agora
+            </motion.button>
+            <motion.button
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.45 }}
+              onClick={() => {
+                setMenuOpen(false);
+                router.push("/admin");
+              }}
+              className="mt-3 text-[#1A1A1A] hover:text-[#FF5500] text-sm cursor-pointer bg-transparent border-none transition-colors"
+              style={{ fontFamily: "Space Grotesk, sans-serif", fontWeight: 500 }}
+            >
+              Área admin
             </motion.button>
           </motion.div>
         )}
