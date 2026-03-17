@@ -59,7 +59,7 @@ yarn lint
 ```
 src/
 ├── app/              # App Router (rotas, layouts, páginas)
-│   ├── admin/        # Área administrativa (animais)
+│   ├── admin/        # Área administrativa (animals)
 │   └── page.tsx      # Página inicial (one-page)
 ├── components/       # Componentes reutilizáveis
 │   ├── Hero.tsx

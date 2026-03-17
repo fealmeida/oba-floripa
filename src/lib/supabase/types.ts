@@ -70,15 +70,15 @@ export interface Database {
         Row: {
           id: string
           animal_id: string
-          nome: string
+          name: string
           email: string
-          telefone: string
-          endereco: string
-          cidade: string
-          tem_experiencia: string | null
-          tem_outros_pets: string | null
-          tipo_moradia: string | null
-          mensagem: string | null
+          phone: string
+          address: string
+          city: string
+          has_experience: string | null
+          has_other_pets: string | null
+          housing_type: string | null
+          message: string | null
           status: SolicitacaoStatus
           created_at: string
           updated_at: string
@@ -86,15 +86,15 @@ export interface Database {
         Insert: {
           id?: string
           animal_id: string
-          nome: string
+          name: string
           email: string
-          telefone: string
-          endereco: string
-          cidade: string
-          tem_experiencia?: string | null
-          tem_outros_pets?: string | null
-          tipo_moradia?: string | null
-          mensagem?: string | null
+          phone: string
+          address: string
+          city: string
+          has_experience?: string | null
+          has_other_pets?: string | null
+          housing_type?: string | null
+          message?: string | null
           status?: SolicitacaoStatus
           created_at?: string
           updated_at?: string
@@ -102,15 +102,15 @@ export interface Database {
         Update: {
           id?: string
           animal_id?: string
-          nome?: string
+          name?: string
           email?: string
-          telefone?: string
-          endereco?: string
-          cidade?: string
-          tem_experiencia?: string | null
-          tem_outros_pets?: string | null
-          tipo_moradia?: string | null
-          mensagem?: string | null
+          phone?: string
+          address?: string
+          city?: string
+          has_experience?: string | null
+          has_other_pets?: string | null
+          housing_type?: string | null
+          message?: string | null
           status?: SolicitacaoStatus
           created_at?: string
           updated_at?: string

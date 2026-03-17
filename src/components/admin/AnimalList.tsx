@@ -32,7 +32,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import type { AdminAnimal } from "@/lib/supabase/types";
 import { ANIMAL_TYPES } from "@/lib/mock-animals";
-import { deleteAnimal } from "@/app/actions/animais";
+import { deleteAnimal } from "@/app/actions/animals";
 import { Pencil, Trash2, Plus, Search } from "lucide-react";
 
 const STATUS_LABELS: Record<AdminAnimal["status"], string> = {
@@ -90,7 +90,7 @@ export function AnimalList({
         >
           Animais para adoção
         </h2>
-        <Link href="/admin/animais/novo">
+        <Link href="/admin/animals/new">
           <Button
             className="rounded-full bg-[#FF5500] hover:bg-[#FF5500]/90 text-white border-0"
             style={{ fontFamily: "Syne, sans-serif", fontWeight: 700 }}
@@ -210,7 +210,7 @@ export function AnimalList({
                 </p>
               </CardContent>
               <CardFooter className="pt-4 flex gap-2">
-                <Link href={`/admin/animais/${animal.id}`} className="flex-1">
+                <Link href={`/admin/animals/${animal.id}`} className="flex-1">
                   <Button
                     variant="outline"
                     size="sm"

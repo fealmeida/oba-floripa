@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/select";
 import type { AdminAnimal } from "@/lib/supabase/types";
 import { ANIMAL_TYPES, ANIMAL_GENDERS } from "@/lib/mock-animals";
-import { createAnimal, updateAnimal } from "@/app/actions/animais";
+import { createAnimal, updateAnimal } from "@/app/actions/animals";
 import { uploadAnimalImage } from "@/app/actions/upload-animal-image";
 import { ArrowLeft, Upload, Link as LinkIcon, ZoomIn, ZoomOut } from "lucide-react";
 

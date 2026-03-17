@@ -6,9 +6,9 @@
 
 1. Acesse [app.supabase.com](https://app.supabase.com) → seu projeto.
 2. Menu **SQL Editor** → **New query**.
-3. Copie e cole o conteúdo de `migrations/00001_create_animais_and_solicitacoes.sql`.
+3. Copie e cole o conteúdo de `migrations/00001_create_animals_and_adoption_requests.sql`.
 4. Execute (Run).
-5. Para popular com animais iniciais, abra uma nova query, cole `migrations/00002_seed_animais.sql` e execute.
+5. Para popular com animais iniciais, abra uma nova query, cole `migrations/00002_seed_animals.sql` e execute.
 
 ### Opção 2: Supabase CLI
 
