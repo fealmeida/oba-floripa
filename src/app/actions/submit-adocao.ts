@@ -1,7 +1,7 @@
 'use server'
 
 import { createClient } from '@/lib/supabase/server'
-import type { SolicitacaoInsert } from '@/lib/supabase/types'
+import type { AdoptionRequestInsert } from '@/lib/supabase/types'
 
 export type SubmitAdocaoPayload = {
   animal_id: string
@@ -23,7 +23,7 @@ export type SubmitAdocaoResult =
 export async function submitAdocao(
   payload: SubmitAdocaoPayload
 ): Promise<SubmitAdocaoResult> {
-  const insert: SolicitacaoInsert = {
+  const insert: AdoptionRequestInsert = {
     animal_id: payload.animal_id,
     nome: payload.nome.trim(),
     email: payload.email.trim(),

@@ -14,7 +14,7 @@ export type Json =
 export type AnimalType = 'cachorro' | 'gato'
 export type AnimalGender = 'fêmea' | 'macho'
 export type AnimalStatus = 'disponível' | 'adotado' | 'reservado'
-export type SolicitacaoStatus = 'pendente' | 'em_analise' | 'aprovada' | 'rejeitada'
+export type AdoptionRequestStatus = 'pending' | 'in_review' | 'approved' | 'rejected' | 'responded' | 'cancelled'
 
 export interface Database {
   public: {
@@ -79,7 +79,9 @@ export interface Database {
           tem_outros_pets: string | null
           tipo_moradia: string | null
           mensagem: string | null
-          status: SolicitacaoStatus
+          status: AdoptionRequestStatus
+          read: boolean
+          admin_comment: string | null
           created_at: string
           updated_at: string
         }
@@ -95,7 +97,9 @@ export interface Database {
           tem_outros_pets?: string | null
           tipo_moradia?: string | null
           mensagem?: string | null
-          status?: SolicitacaoStatus
+          status?: AdoptionRequestStatus
+          read?: boolean
+          admin_comment?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -111,7 +115,9 @@ export interface Database {
           tem_outros_pets?: string | null
           tipo_moradia?: string | null
           mensagem?: string | null
-          status?: SolicitacaoStatus
+          status?: AdoptionRequestStatus
+          read?: boolean
+          admin_comment?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -123,7 +129,7 @@ export interface Database {
       animal_type: AnimalType
       animal_gender: AnimalGender
       animal_status: AnimalStatus
-      solicitacao_status: SolicitacaoStatus
+      adoption_request_status: AdoptionRequestStatus
     }
   }
 }
@@ -140,8 +146,17 @@ export type AnimalUpdate = Database['public']['Tables']['animais']['Update']
 /** Animal no admin (sem timestamps); id é UUID string do Supabase */
 export type AdminAnimal = Omit<AnimalRow, 'created_at' | 'updated_at'>
 
-/** Linha da tabela solicitacoes_adocao (Row) */
-export type SolicitacaoRow = Database['public']['Tables']['solicitacoes_adocao']['Row']
+/** Row for solicitacoes_adocao table */
+export type AdoptionRequestRow = Database['public']['Tables']['solicitacoes_adocao']['Row']
 
-/** Payload para inserir solicitação (formulário de adoção) */
-export type SolicitacaoInsert = Database['public']['Tables']['solicitacoes_adocao']['Insert']
+/** Insert payload for adoption request (public form) */
+export type AdoptionRequestInsert = Database['public']['Tables']['solicitacoes_adocao']['Insert']
+
+/** Update payload for adoption request (admin) */
+export type AdoptionRequestUpdate = Database['public']['Tables']['solicitacoes_adocao']['Update']
+
+/** Adoption request in admin list with animal name and type (from join) */
+export type AdminAdoptionRequest = AdoptionRequestRow & {
+  animal_name: string
+  animal_type: AnimalType
+}
