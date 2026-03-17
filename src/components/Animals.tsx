@@ -1,7 +1,6 @@
 "use client";
 import { motion, useInView } from "motion/react";
 import { useRef, useState, useCallback, useEffect } from "react";
-import Image from "next/image";
 import {
   MapPin,
   Calendar,
@@ -12,6 +11,7 @@ import {
 import useEmblaCarousel from "embla-carousel-react";
 import { PawPrint, StarIllustration, BoneIllustration } from "./Illustrations";
 import { AdoptionModal } from "./AdoptionModal";
+import { AnimalCardLayout } from "./AnimalCardLayout";
 import { createClient } from "@/lib/supabase/client";
 import {
   mapAnimalRowToUI,
@@ -58,69 +58,58 @@ function AnimalCard({
       whileHover={{ scale: 1.02 }}
       className={`group flex flex-col h-[500px] bg-gradient-to-b ${cardBg} rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-500 border border-white`}
     >
-      {/* Image - altura fixa */}
-      <div className="relative h-64 shrink-0 overflow-hidden">
-        <div
-          className="absolute inset-0"
-          style={{
-            transform: `scale(${Math.max(1, animal.img_zoom ?? 1)})`,
-            transformOrigin: animal.img_position || "50% 40%",
-          }}
-        >
-          <Image
-            src={animal.img}
-            alt={animal.name}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
-            style={{ objectPosition: animal.img_position || "50% 40%" }}
-          />
-        </div>
-        {/* Color overlay on hover */}
-        <div
-          className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
-          style={{ background: accent }}
-        />
-
-        {animal.tag && (
-          <motion.span
-            initial={{ scale: 0 }}
-            animate={inView ? { scale: 1 } : {}}
-            transition={{
-              delay: index * 0.1 + 0.4,
-              type: "spring",
-              bounce: 0.5,
-            }}
-            className="absolute top-4 left-4 px-3 py-1 rounded-full text-white text-xs shadow-lg"
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontWeight: 700,
-              background: tagColor,
-              letterSpacing: "0.05em",
-            }}
-          >
-            {animal.tag}
-          </motion.span>
-        )}
-
-        <motion.button
-          whileTap={{ scale: 0.8 }}
-          onClick={() => setLiked(!liked)}
-          className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center cursor-pointer border-none shadow-md transition-all duration-300"
-          style={{
-            background: liked ? accent : "white",
-          }}
-        >
-          <Heart
-            size={16}
-            style={{ color: liked ? "white" : accent }}
-            fill={liked ? "white" : "none"}
-          />
-        </motion.button>
-      </div>
-
-      {/* Info - ocupa o resto e mantém botão no fim */}
-      <div className="flex flex-col flex-1 min-h-0 p-6">
+      <AnimalCardLayout
+        image={{
+          src: animal.img,
+          alt: animal.name,
+          img_zoom: animal.img_zoom,
+          img_position: animal.img_position,
+        }}
+        imageClassName="transition-transform duration-700 group-hover:scale-110"
+        imageOverlay={
+          <>
+            <div
+              className="absolute inset-0 opacity-0 group-hover:opacity-20 transition-opacity duration-500"
+              style={{ background: accent }}
+            />
+            {animal.tag && (
+              <motion.span
+                initial={{ scale: 0 }}
+                animate={inView ? { scale: 1 } : {}}
+                transition={{
+                  delay: index * 0.1 + 0.4,
+                  type: "spring",
+                  bounce: 0.5,
+                }}
+                className="absolute top-4 left-4 px-3 py-1 rounded-full text-white text-xs shadow-lg"
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  fontWeight: 700,
+                  background: tagColor,
+                  letterSpacing: "0.05em",
+                }}
+              >
+                {animal.tag}
+              </motion.span>
+            )}
+            <motion.button
+              whileTap={{ scale: 0.8 }}
+              onClick={() => setLiked(!liked)}
+              className="absolute top-4 right-4 w-9 h-9 rounded-full flex items-center justify-center cursor-pointer border-none shadow-md transition-all duration-300"
+              style={{
+                background: liked ? accent : "white",
+              }}
+            >
+              <Heart
+                size={16}
+                style={{ color: liked ? "white" : accent }}
+                fill={liked ? "white" : "none"}
+              />
+            </motion.button>
+          </>
+        }
+      >
+        <div className="flex flex-col flex-1 min-h-0 p-6">
         <div className="flex items-start justify-between mb-2 shrink-0">
           <h3
             className="text-[#1A1A1A] flex items-center gap-2"
@@ -198,7 +187,8 @@ function AnimalCard({
         >
           Quero adotar {animal.name} →
         </motion.button>
-      </div>
+        </div>
+      </AnimalCardLayout>
     </motion.div>
   );
 }

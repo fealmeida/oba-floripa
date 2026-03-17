@@ -2,8 +2,8 @@
 
 import { useState, useMemo, useEffect } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { AnimalCardLayout } from "@/components/AnimalCardLayout";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -165,32 +165,24 @@ export function AnimalList({
               key={animal.id}
               className="border-[#E5E7EB] bg-white rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow"
             >
-              <div className="relative h-64 bg-[#F9F9F9] overflow-hidden">
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    transform: `scale(${Math.max(1, animal.img_zoom ?? 1)})`,
-                    transformOrigin: animal.img_position || "50% 40%",
-                  }}
-                >
-                  <Image
-                    src={animal.img}
-                    alt={animal.name}
-                    fill
-                    className="object-cover"
-                    style={{ objectPosition: animal.img_position || "50% 40%" }}
-                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  />
-                </div>
-                {animal.tag && (
-                  <Badge
-                    className="absolute top-4 left-4 rounded-full text-white border-0 text-xs font-semibold uppercase tracking-widest"
-                    style={{ backgroundColor: "#FF5500" }}
-                  >
-                    {animal.tag}
-                  </Badge>
-                )}
-              </div>
+              <AnimalCardLayout
+                image={{
+                  src: animal.img,
+                  alt: animal.name,
+                  img_zoom: animal.img_zoom,
+                  img_position: animal.img_position,
+                }}
+                imageOverlay={
+                  animal.tag ? (
+                    <Badge
+                      className="absolute top-4 left-4 rounded-full text-white border-0 text-xs font-semibold uppercase tracking-widest"
+                      style={{ backgroundColor: "#FF5500" }}
+                    >
+                      {animal.tag}
+                    </Badge>
+                  ) : undefined
+                }
+              >
               <CardHeader className="pb-2">
                 <div className="flex items-start justify-between gap-2">
                   <h3
@@ -242,6 +234,7 @@ export function AnimalList({
                   <Trash2 className="size-4" />
                 </Button>
               </CardFooter>
+              </AnimalCardLayout>
             </Card>
           ))}
         </div>

@@ -21,7 +21,7 @@ const HERO_IMAGES: readonly string[] = [
     (_, i) => `/images/hero/hero-${String(i + 30).padStart(2, "0")}.png`,
   ),
 ];
-const HERO_IMG = HERO_IMAGES[1]; // índice 0–41 para testar outra
+const HERO_IMG = HERO_IMAGES[25]; // índice 0–41 para testar outra
 
 const floatingElements = [
   {
@@ -190,16 +190,18 @@ export function Hero() {
           style={{
             fontFamily: "Syne, sans-serif",
             fontWeight: 800,
-            fontSize: "clamp(3rem, 9vw, 7rem)",
+            fontSize: "clamp(2.40rem, 7vw, 7rem)",
             lineHeight: 1.0,
             letterSpacing: "-0.03em",
           }}
         >
-          Todo bicho
+          Adotar é
           <br />
-          merece um{" "}
+          transformar
+          <br />
+          amor em{" "}
           <span className="relative inline-block">
-            <span style={{ color: "#FF5500" }}>lar.</span>
+            <span style={{ color: "#FF5500" }}>ação.</span>
             {/* Underline doodle */}
             <motion.svg
               initial={{ pathLength: 0, opacity: 0 }}
