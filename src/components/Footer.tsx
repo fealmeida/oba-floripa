@@ -214,12 +214,6 @@ export function Footer() {
                   text: "oba.floripa@gmail.com",
                   color: "#FF5500",
                 },
-                {
-                  icon: WhatsAppIcon,
-                  text: "(48) 99114-2537",
-                  color: "#25D366",
-                  href: WHATSAPP_URL,
-                },
                 { icon: MapPin, text: "Florianópolis, SC", color: "#8B5CF6" },
               ].map((item) => {
                 const content = (
