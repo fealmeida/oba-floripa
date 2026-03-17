@@ -239,7 +239,7 @@ export function Footer() {
                   <li key={item.text} className="flex items-center gap-3">
                     {"href" in item && item.href ? (
                       <a
-                        href={item.href}
+                        href={(item.href as string) || ""}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-3 hover:opacity-90 transition-opacity"
