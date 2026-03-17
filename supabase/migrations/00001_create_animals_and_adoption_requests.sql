@@ -29,19 +29,19 @@ CREATE TABLE public.animais (
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
--- Tabela: solicitações de adoção
+-- Tabela: solicitações de adoção (adoption requests)
 CREATE TABLE public.solicitacoes_adocao (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   animal_id UUID NOT NULL REFERENCES public.animais(id) ON DELETE CASCADE,
-  nome TEXT NOT NULL,
+  name TEXT NOT NULL,
   email TEXT NOT NULL,
-  telefone TEXT NOT NULL,
-  endereco TEXT NOT NULL,
-  cidade TEXT NOT NULL,
-  tem_experiencia TEXT,
-  tem_outros_pets TEXT,
-  tipo_moradia TEXT,
-  mensagem TEXT,
+  phone TEXT NOT NULL,
+  address TEXT NOT NULL,
+  city TEXT NOT NULL,
+  has_experience TEXT,
+  has_other_pets TEXT,
+  housing_type TEXT,
+  message TEXT,
   status solicitacao_status NOT NULL DEFAULT 'pendente',
   created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT now()

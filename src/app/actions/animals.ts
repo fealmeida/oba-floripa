@@ -4,6 +4,17 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/lib/supabase/server";
 import type { AnimalInsert, AnimalUpdate } from "@/lib/supabase/types";
 
+const STORAGE_BUCKET = "animais";
+
+/** Extrai o path do objeto no bucket a partir da URL pública do Supabase Storage. */
+function getStoragePathFromPublicUrl(url: string): string | null {
+  if (!url?.trim()) return null;
+  const match = url.trim().match(/\/storage\/v1\/object\/public\/animais\/(.+)$/);
+  const path = match?.[1];
+  if (!path) return null;
+  return path.split("?")[0] || null;
+}
+
 export type CreateAnimalResult =
   | { success: true; id: string }
   | { success: false; error: string };
@@ -73,9 +84,24 @@ export async function updateAnimal(
 
 export async function deleteAnimal(id: string): Promise<DeleteAnimalResult> {
   const supabase = await createClient();
-  const { error } = await supabase.from("animais").delete().eq("id", id);
 
+  const { data: animal, error: fetchError } = await supabase
+    .from("animais")
+    .select("img")
+    .eq("id", id)
+    .single();
+
+  if (fetchError) return { success: false, error: fetchError.message };
+  if (!animal) return { success: false, error: "Animal não encontrado." };
+
+  const storagePath = getStoragePathFromPublicUrl(animal.img);
+  if (storagePath) {
+    await supabase.storage.from(STORAGE_BUCKET).remove([storagePath]);
+  }
+
+  const { error } = await supabase.from("animais").delete().eq("id", id);
   if (error) return { success: false, error: error.message };
+
   revalidatePath("/admin");
   revalidatePath("/");
   return { success: true };

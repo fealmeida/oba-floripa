@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
-import { submitAdocao } from "@/app/actions/submit-adocao";
+import { submitAdoption } from "@/app/actions/submit-adoption";
 import { getColorsForAnimal } from "@/lib/supabase";
 
 interface Animal {
@@ -73,17 +73,17 @@ export function AdoptionModal({ isOpen, onClose, animal }: AdoptionModalProps) {
     if (!animal) return;
     setIsSubmitting(true);
     setSubmitError(null);
-    const result = await submitAdocao({
+    const result = await submitAdoption({
       animal_id: String(animal.id),
-      nome: formData.name,
+      name: formData.name,
       email: formData.email,
-      telefone: formData.phone,
-      endereco: formData.address,
-      cidade: formData.city,
-      tem_experiencia: formData.hasExperience || null,
-      tem_outros_pets: formData.hasOtherPets || null,
-      tipo_moradia: formData.houseType || null,
-      mensagem: formData.message || null,
+      phone: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      has_experience: formData.hasExperience || null,
+      has_other_pets: formData.hasOtherPets || null,
+      housing_type: formData.houseType || null,
+      message: formData.message || null,
     });
     setIsSubmitting(false);
     if (!result.success) {

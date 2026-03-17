@@ -1,5 +1,5 @@
 -- Seed opcional: animais iniciais (mesmos do mock)
--- Executar após 00001_create_animais_and_solicitacoes.sql
+-- Executar após 00001_create_animals_and_adoption_requests.sql
 -- No SQL Editor: rodar este arquivo após criar as tabelas.
 -- Cores (accent, tagColor, cardBg) são derivadas no código a partir de tag e type.
 
