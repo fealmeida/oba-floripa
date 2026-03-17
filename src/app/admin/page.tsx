@@ -6,7 +6,7 @@ export default async function AdminPage() {
   const supabase = await createClient()
   const { data: rows, error } = await supabase
     .from('animais')
-    .select('id, name, age, type, gender, desc, img, tag, status')
+    .select('id, name, age, type, gender, desc, img, img_position, img_zoom, tag, status')
     .order('created_at', { ascending: false })
 
   const animals: AdminAnimal[] = error
@@ -19,6 +19,8 @@ export default async function AdminPage() {
         gender: r.gender,
         desc: r.desc,
         img: r.img,
+        img_position: r.img_position ?? null,
+        img_zoom: r.img_zoom ?? 1,
         tag: r.tag,
         status: r.status,
       }))

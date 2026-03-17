@@ -110,44 +110,44 @@ function AnimalCard({
         }
       >
         <div className="flex flex-col flex-1 min-h-0 p-6">
-        <div className="flex items-start justify-between mb-2 shrink-0">
-          <h3
-            className="text-[#1A1A1A] flex items-center gap-2"
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontWeight: 800,
-              fontSize: "1.4rem",
-            }}
-          >
-            {getEmojiByType(animal.type)} {animal.name}
-          </h3>
-          <span
-            className="px-3 py-1 rounded-full text-white"
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "0.75rem",
-              fontWeight: 600,
-              background: accent,
-            }}
-          >
-            {animal.gender === "fêmea" ? "Fêmea" : "Macho"}
-          </span>
-        </div>
-
-        <div className="flex items-center gap-4 mb-4 shrink-0">
-          <div className="flex items-center gap-1" style={{ color: accent }}>
-            <Calendar size={13} />
-            <span
+          <div className="flex items-start justify-between mb-2 shrink-0">
+            <h3
+              className="text-[#1A1A1A] flex items-center gap-2"
               style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "0.8rem",
-                color: "#666",
+                fontFamily: "var(--font-heading)",
+                fontWeight: 800,
+                fontSize: "1.4rem",
               }}
             >
-              {animal.age}
+              {getEmojiByType(animal.type)} {animal.name}
+            </h3>
+            <span
+              className="px-3 py-1 rounded-full text-white"
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "0.75rem",
+                fontWeight: 600,
+                background: accent,
+              }}
+            >
+              {animal.gender === "fêmea" ? "Fêmea" : "Macho"}
             </span>
           </div>
-          {/* <div className="flex items-center gap-1">
+
+          <div className="flex items-center gap-4 mb-4 shrink-0">
+            <div className="flex items-center gap-1" style={{ color: accent }}>
+              <Calendar size={13} />
+              <span
+                style={{
+                  fontFamily: "var(--font-sans)",
+                  fontSize: "0.8rem",
+                  color: "#666",
+                }}
+              >
+                {animal.age}
+              </span>
+            </div>
+            {/* <div className="flex items-center gap-1">
             <MapPin size={13} style={{ color: accent }} />
             <span
               style={{
@@ -159,34 +159,34 @@ function AnimalCard({
               Florianópolis
             </span>
           </div> */}
-        </div>
+          </div>
 
-        <p
-          className="text-[#555] mb-5 flex-1 min-h-[3.5rem] line-clamp-3"
-          style={{
-            fontFamily: "var(--font-sans)",
-            fontSize: "0.875rem",
-            lineHeight: 1.7,
-          }}
-        >
-          {animal.desc}
-        </p>
+          <p
+            className="text-[#555] mb-5 flex-1 min-h-[3.5rem] line-clamp-3"
+            style={{
+              fontFamily: "var(--font-sans)",
+              fontSize: "0.875rem",
+              lineHeight: 1.7,
+            }}
+          >
+            {animal.desc}
+          </p>
 
-        <motion.button
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          onClick={() => onAdopt(animal)}
-          className="w-full text-white py-3 rounded-2xl cursor-pointer border-none transition-all duration-300 shadow-md shrink-0"
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontWeight: 700,
-            fontSize: "0.9rem",
-            background: accent,
-            boxShadow: `0 6px 20px ${accent}55`,
-          }}
-        >
-          Quero adotar {animal.name} →
-        </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => onAdopt(animal)}
+            className="w-full text-white py-3 rounded-2xl cursor-pointer border-none transition-all duration-300 shadow-md shrink-0"
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontWeight: 700,
+              fontSize: "0.9rem",
+              background: accent,
+              boxShadow: `0 6px 20px ${accent}55`,
+            }}
+          >
+            Quero adotar {animal.name} →
+          </motion.button>
         </div>
       </AnimalCardLayout>
     </motion.div>
@@ -346,24 +346,6 @@ export function Animals() {
               <span style={{ color: "#FF5500" }}>por você.</span>
             </motion.h2>
           </div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={inView ? { opacity: 1, scale: 1 } : {}}
-            transition={{ duration: 0.7, delay: 0.3 }}
-            className="bg-white rounded-2xl p-4 border border-[#E5E7EB] max-w-xs shadow-sm"
-          >
-            <p
-              className="text-[#555]"
-              style={{
-                fontFamily: "var(--font-sans)",
-                fontSize: "0.875rem",
-                lineHeight: 1.7,
-              }}
-            >
-              ✅ Todos vacinados, castrados e com acompanhamento veterinário
-              antes da adoção.
-            </p>
-          </motion.div>
         </div>
 
         {/* Carrossel */}
