@@ -118,7 +118,7 @@ export function Hero() {
   return (
     <section
       ref={ref}
-      className="relative min-h-screen overflow-hidden bg-[#FFF5EC] flex items-end"
+      className="relative min-h-screen overflow-hidden bg-[#FFF5EC] flex flex-col justify-end [@media(min-height:701px)_and_(max-height:935px)]:min-h-[calc(100dvh+3rem)]"
     >
       {/* Bright colorful blobs */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -180,17 +180,17 @@ export function Hero() {
       {/* Content */}
       <motion.div
         style={{ opacity }}
-        className="relative z-10 max-w-7xl mx-auto px-6 pb-20 md:pb-28 w-full"
+        className="relative z-10 max-w-7xl mx-auto px-6 pt-12 md:pt-24 pb-20 md:pb-28 w-full [@media(max-width:767px)_and_(max-height:669px)]:pb-10 [@media(max-width:767px)_and_(min-height:800px)_and_(max-height:899px)]:pb-36"
       >
         <motion.h1
           initial={{ opacity: 0, y: 60 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="text-[#1A1A1A] mb-6 max-w-3xl"
+          className="text-primary-foreground mb-6 max-w-3xl [@media(min-height:701px)_and_(max-height:900px)]:mb-12"
           style={{
             fontFamily: "Syne, sans-serif",
             fontWeight: 800,
-            fontSize: "clamp(2.40rem, 7vw, 7rem)",
+            fontSize: "clamp(2.40rem, 4.5vw, 4.25rem)",
             lineHeight: 1.0,
             letterSpacing: "-0.03em",
           }}
@@ -229,11 +229,13 @@ export function Hero() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.65, duration: 0.8 }}
-          className="text-[#555] max-w-lg mb-10"
+          className="text-primary max-w-lg mb-10 [@media(min-height:701px)_and_(max-height:935px)]:mt-12"
           style={{
             fontFamily: "Space Grotesk, sans-serif",
             fontSize: "1.15rem",
             lineHeight: 1.7,
+            textShadow:
+              "0 0 1px rgba(255,255,255,0.95), 0 1px 3px rgba(255,255,255,0.85), 0 2px 8px rgba(0,0,0,0.18)",
           }}
         >
           A OBA Floripa conecta pessoas a animais que precisam de amor, abrigo e
