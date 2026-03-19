@@ -8,12 +8,14 @@ export type {
   Json,
   AnimalRow,
   AnimalInsert,
-  SolicitacaoRow,
-  SolicitacaoInsert,
+  AdoptionRequestRow,
+  AdoptionRequestInsert,
+  AdoptionRequestStatus,
+  AdoptionRequestUpdate,
+  AdminAdoptionRequest,
   AnimalType,
   AnimalGender,
   AnimalStatus,
-  SolicitacaoStatus,
 } from './types'
 export type { AnimalForUI, AnimalColors } from './map-animal'
 export { mapAnimalRowToUI, getColorsForAnimal } from './map-animal'
