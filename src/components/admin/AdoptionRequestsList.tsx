@@ -63,6 +63,36 @@ const STATUS_OPTIONS: AdoptionRequestStatus[] = [
   "cancelled",
 ];
 
+const MESSAGE_TOGGLE_MIN_LEN = 120;
+
+function ExpandableRequestMessage({ message }: { message: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const needsToggle = message.length > MESSAGE_TOGGLE_MIN_LEN;
+
+  return (
+    <div className="border-l-2 border-[#E5E7EB] pl-3">
+      <p
+        className={`text-[#555] text-sm whitespace-pre-wrap ${
+          needsToggle && !expanded ? "line-clamp-3" : ""
+        }`}
+      >
+        {message}
+      </p>
+      {needsToggle && (
+        <button
+          type="button"
+          aria-expanded={expanded}
+          onClick={() => setExpanded((e) => !e)}
+          className="mt-1.5 text-sm font-semibold text-[#FF5500] bg-transparent border-none cursor-pointer p-0 hover:underline underline-offset-2"
+          style={{ fontFamily: "Space Grotesk, sans-serif" }}
+        >
+          {expanded ? "Ver menos" : "Ver mais"}
+        </button>
+      )}
+    </div>
+  );
+}
+
 function formatDate(s: string) {
   try {
     const d = new Date(s);
@@ -365,11 +395,7 @@ export function AdoptionRequestsList({
                   </p>
                 </div>
                 {s.message && (
-                  <p className="text-[#555] text-sm border-l-2 border-[#E5E7EB] pl-3">
-                    {s.message.length > 120
-                      ? `${s.message.slice(0, 120)}...`
-                      : s.message}
-                  </p>
+                  <ExpandableRequestMessage message={s.message} />
                 )}
 
                 {/* Ações: read + status */}

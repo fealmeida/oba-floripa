@@ -34,12 +34,46 @@ import type { AdminAnimal } from "@/lib/supabase/types";
 import { ANIMAL_TYPES } from "@/lib/mock-animals";
 import { deleteAnimal } from "@/app/actions/animals";
 import { Pencil, Trash2, Plus, Search } from "lucide-react";
+import { DescriptionWithWhatsAppLinks } from "@/components/DescriptionWithWhatsAppLinks";
 
 const STATUS_LABELS: Record<AdminAnimal["status"], string> = {
   disponível: "Disponível",
   adotado: "Adotado",
   reservado: "Reservado",
 };
+
+const DESC_TOGGLE_MIN_LEN = 120;
+
+function AdminAnimalDescription({ desc }: { desc: string }) {
+  const [expanded, setExpanded] = useState(false);
+  const needsToggle = desc.length > DESC_TOGGLE_MIN_LEN;
+
+  return (
+    <div>
+      <p
+        className={`text-[#555] text-sm leading-relaxed ${
+          needsToggle && !expanded ? "line-clamp-2" : ""
+        }`}
+      >
+        <DescriptionWithWhatsAppLinks
+          text={desc}
+          linkClassName="font-semibold underline underline-offset-2 text-[#25D366] hover:text-[#20BD5C]"
+        />
+      </p>
+      {needsToggle && (
+        <button
+          type="button"
+          aria-expanded={expanded}
+          onClick={() => setExpanded((e) => !e)}
+          className="mt-1.5 text-sm font-semibold text-[#FF5500] bg-transparent border-none cursor-pointer p-0 hover:underline underline-offset-2"
+          style={{ fontFamily: "Space Grotesk, sans-serif" }}
+        >
+          {expanded ? "Ver menos" : "Ver mais"}
+        </button>
+      )}
+    </div>
+  );
+}
 
 export function AnimalList({
   initialAnimals,
@@ -205,9 +239,7 @@ export function AnimalList({
                 </p>
               </CardHeader>
               <CardContent className="py-0">
-                <p className="text-[#555] text-sm line-clamp-2">
-                  {animal.desc}
-                </p>
+                <AdminAnimalDescription desc={animal.desc} />
               </CardContent>
               <CardFooter className="pt-4 flex gap-2">
                 <Link href={`/admin/animals/${animal.id}`} className="flex-1">

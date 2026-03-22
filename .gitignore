@@ -11,6 +11,7 @@ next-env.d.ts
 out
 dist
 build
+*.tsbuildinfo
 
 # Env
 .env*.local

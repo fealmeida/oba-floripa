@@ -12,6 +12,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { PawPrint, StarIllustration, BoneIllustration } from "./Illustrations";
 import { AdoptionModal } from "./AdoptionModal";
 import { AnimalCardLayout } from "./AnimalCardLayout";
+import { DescriptionWithWhatsAppLinks } from "./DescriptionWithWhatsAppLinks";
 import { createClient } from "@/lib/supabase/client";
 import {
   mapAnimalRowToUI,
@@ -29,10 +30,12 @@ function AnimalCard({
   animal,
   index,
   onAdopt,
+  carouselResetKey,
 }: {
   animal: AnimalForUI;
   index: number;
   onAdopt: (animal: AnimalForUI) => void;
+  carouselResetKey: number;
 }) {
   const { tagColor, cardBg, accent } = getColorsForAnimal(
     animal.id,
@@ -45,6 +48,14 @@ function AnimalCard({
     margin: "-60px",
   });
   const [liked, setLiked] = useState(false);
+  const [descExpanded, setDescExpanded] = useState(false);
+  /** Textos longos: preview com 3 linhas + expandir (melhor que rolagem interna no mobile vs. carrossel). */
+  const needsDescToggle = animal.desc.length > 160;
+
+  useEffect(() => {
+    setLiked(false);
+    setDescExpanded(false);
+  }, [carouselResetKey]);
 
   return (
     <motion.div
@@ -56,7 +67,7 @@ function AnimalCard({
         ease: [0.16, 1, 0.3, 1],
       }}
       whileHover={{ scale: 1.02 }}
-      className={`group flex flex-col h-[500px] bg-gradient-to-b ${cardBg} rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-500 border border-white`}
+      className={`group flex flex-col min-h-[500px] bg-gradient-to-b ${cardBg} rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-500 border border-white`}
     >
       <AnimalCardLayout
         image={{
@@ -161,22 +172,49 @@ function AnimalCard({
           </div> */}
           </div>
 
-          <p
-            className="text-[#555] mb-5 flex-1 min-h-[3.5rem] line-clamp-3"
-            style={{
-              fontFamily: "var(--font-sans)",
-              fontSize: "0.875rem",
-              lineHeight: 1.7,
-            }}
+          <div
+            className={
+              needsDescToggle && !descExpanded
+                ? "flex flex-col flex-1 min-h-0 mb-5"
+                : "mb-5"
+            }
           >
-            {animal.desc}
-          </p>
+            <p
+              className={
+                needsDescToggle && !descExpanded
+                  ? "text-[#555] line-clamp-3 flex-1 min-h-0 overflow-hidden"
+                  : "text-[#555]"
+              }
+              style={{
+                fontFamily: "var(--font-sans)",
+                fontSize: "0.875rem",
+                lineHeight: 1.7,
+              }}
+            >
+              <DescriptionWithWhatsAppLinks
+                text={animal.desc}
+                linkClassName="font-semibold underline underline-offset-2"
+                linkStyle={{ color: accent }}
+              />
+            </p>
+            {needsDescToggle && (
+              <button
+                type="button"
+                aria-expanded={descExpanded}
+                onClick={() => setDescExpanded((e) => !e)}
+                className="mt-2 shrink-0 text-left text-sm font-semibold bg-transparent border-none cursor-pointer p-0 underline-offset-2 hover:underline"
+                style={{ color: accent }}
+              >
+                {descExpanded ? "Ver menos" : "Ver mais"}
+              </button>
+            )}
+          </div>
 
           <motion.button
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => onAdopt(animal)}
-            className="w-full text-white py-3 rounded-2xl cursor-pointer border-none transition-all duration-300 shadow-md shrink-0"
+            className="w-full text-white py-3 rounded-2xl cursor-pointer border-none transition-all duration-300 shadow-md shrink-0 mt-auto"
             style={{
               fontFamily: "var(--font-heading)",
               fontWeight: 700,
@@ -241,6 +279,12 @@ export function Animals() {
 
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
+  const [carouselResetKey, setCarouselResetKey] = useState(0);
+  const prevSnapRef = useRef<number | null>(null);
+  const carouselBlockRef = useRef<HTMLDivElement>(null);
+  const scrollIntoViewTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null,
+  );
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
@@ -249,6 +293,32 @@ export function Animals() {
     if (!emblaApi) return;
     setCanScrollPrev(emblaApi.canScrollPrev());
     setCanScrollNext(emblaApi.canScrollNext());
+    const snap = emblaApi.selectedScrollSnap();
+    if (prevSnapRef.current !== null && prevSnapRef.current !== snap) {
+      setCarouselResetKey((k) => k + 1);
+      const el = carouselBlockRef.current;
+      if (el) {
+        if (scrollIntoViewTimeoutRef.current !== null) {
+          clearTimeout(scrollIntoViewTimeoutRef.current);
+        }
+        scrollIntoViewTimeoutRef.current = setTimeout(() => {
+          scrollIntoViewTimeoutRef.current = null;
+          const r = el.getBoundingClientRect();
+          const margin = 16;
+          const vh = window.innerHeight;
+          const needsScroll =
+            r.top < margin || r.bottom > vh - margin;
+          if (needsScroll) {
+            el.scrollIntoView({
+              behavior: "smooth",
+              block: "nearest",
+              inline: "nearest",
+            });
+          }
+        }, 100);
+      }
+    }
+    prevSnapRef.current = snap;
   }, [emblaApi]);
 
   useEffect(() => {
@@ -259,6 +329,15 @@ export function Animals() {
       emblaApi.off("select", onSelect);
     };
   }, [emblaApi, onSelect]);
+
+  useEffect(
+    () => () => {
+      if (scrollIntoViewTimeoutRef.current !== null) {
+        clearTimeout(scrollIntoViewTimeoutRef.current);
+      }
+    },
+    [],
+  );
 
   return (
     <section
@@ -348,8 +427,11 @@ export function Animals() {
           </div>
         </div>
 
-        {/* Carrossel */}
-        <div className="relative">
+        {/* Carrossel: ref para alinhar a rolagem da página ao trocar de slide */}
+        <div
+          ref={carouselBlockRef}
+          className="relative scroll-mt-6 md:scroll-mt-8"
+        >
           {loading ? (
             <div
               className="text-center py-16 text-[#666]"
@@ -383,7 +465,12 @@ export function Animals() {
                       key={a.id}
                       className="flex-[0_0_100%] sm:flex-[0_0_calc(50%-12px)] lg:flex-[0_0_calc(33.333%-16px)] min-w-0 pl-2 first:pl-0"
                     >
-                      <AnimalCard animal={a} index={i} onAdopt={handleAdopt} />
+                      <AnimalCard
+                        animal={a}
+                        index={i}
+                        onAdopt={handleAdopt}
+                        carouselResetKey={carouselResetKey}
+                      />
                     </div>
                   ))}
                 </div>
