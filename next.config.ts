@@ -8,6 +8,10 @@ const nextConfig: NextConfig = {
     },
   },
   images: {
+    // AVIF antes de WebP: ~20-30% menor na foto do hero, com fallback automático.
+    formats: ['image/avif', 'image/webp'],
+    // Next 16 exige declarar as qualities usadas em <Image quality={...} />.
+    qualities: [60, 70, 75],
     remotePatterns: [
       { protocol: 'https', hostname: 'images.unsplash.com', pathname: '/**' },
       { protocol: 'https', hostname: '*.supabase.co', pathname: '/**' },

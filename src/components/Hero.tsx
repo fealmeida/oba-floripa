@@ -1,6 +1,7 @@
 "use client";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useRef } from "react";
+import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 import {
   PawPrint,
@@ -10,18 +11,20 @@ import {
   SparkleIllustration,
 } from "./Illustrations";
 
-// Todas as imagens do hero: 29 JPG (0–28) + 13 PNG (29–41). Troque o índice em HERO_IMG para testar.
-const HERO_IMAGES: readonly string[] = [
-  ...Array.from(
-    { length: 29 },
-    (_, i) => `/images/hero/hero-${String(i + 1).padStart(2, "0")}.jpg`,
-  ),
-  ...Array.from(
-    { length: 13 },
-    (_, i) => `/images/hero/hero-${String(i + 30).padStart(2, "0")}.png`,
-  ),
-];
-const HERO_IMG = HERO_IMAGES[25]; // índice 0–41 para testar outra
+/**
+ * Imagem de fundo do hero.
+ *
+ * O import estático entrega ao Next as dimensões intrínsecas e o blur
+ * placeholder gerado em build — sem isso o navegador não tem nada para pintar
+ * enquanto a foto baixa.
+ *
+ * O arquivo apontado vive em `public/images/hero/optimized/`, gerado por
+ * `yarn optimize:hero` a partir do original em `public/images/hero/`. Para
+ * testar outra foto: rode `node scripts/optimize-hero.mjs hero-NN.jpg` e troque
+ * o caminho do import abaixo. Os originais (4284x5712, até 13 MB) nunca devem
+ * ser referenciados direto — são a fonte, não o que vai para o navegador.
+ */
+import heroImage from "../../public/images/hero/optimized/hero-26.jpg";
 
 const floatingElements = [
   {
@@ -132,10 +135,20 @@ export function Hero() {
         style={{ y }}
         className="absolute inset-0 will-change-transform"
       >
-        <img
-          src={HERO_IMG}
+        {/* priority + fetchPriority: o Next emite <link rel="preload"> com o
+            srcset, então a foto começa a baixar antes do JS. quality 60 (em vez
+            do padrão 75) porque ela fica sob brightness(0.82) e dois gradientes
+            — o detalhe extra não chega à tela e custa ~40% a mais de bytes. */}
+        <Image
+          src={heroImage}
           alt="Animais e voluntários da OBA Floripa"
-          className="w-full h-full object-cover object-center"
+          fill
+          priority
+          fetchPriority="high"
+          sizes="100vw"
+          quality={60}
+          placeholder="blur"
+          className="object-cover object-center"
           style={{ filter: "brightness(0.82) saturate(1.2)" }}
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#FFF5EC] via-[#FFF5EC]/20 to-transparent" />

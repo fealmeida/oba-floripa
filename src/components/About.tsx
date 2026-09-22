@@ -1,7 +1,10 @@
 "use client";
 import { motion, useInView } from "motion/react";
 import { useRef } from "react";
+import Image from "next/image";
 import { Heart, Shield, Users } from "lucide-react";
+// Versão otimizada gerada por `yarn optimize:hero`; o original tem 5,7 MB.
+import aboutImage from "../../public/images/hero/optimized/hero-16.jpg";
 import {
   DogIllustration,
   CatIllustration,
@@ -40,8 +43,6 @@ const pillars = [
 export function About() {
   const ref = useRef(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
-
-  const IMG = "/images/hero/hero-16.jpg";
 
   return (
     <section
@@ -197,10 +198,14 @@ export function About() {
             {/* Color background card */}
             <div className="absolute inset-0 bg-gradient-to-br from-[#FFB800] to-[#FF5500] rounded-3xl rotate-3" />
             <div className="relative rounded-3xl overflow-hidden aspect-[4/5]">
-              <img
-                src={IMG}
+              <Image
+                src={aboutImage}
                 alt="Tutora feliz com seu pet adotado"
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 767px) 100vw, 45vw"
+                quality={70}
+                placeholder="blur"
+                className="object-cover"
               />
 
               {/* Bottom quote */}

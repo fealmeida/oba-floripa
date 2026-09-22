@@ -1,6 +1,7 @@
 "use client";
 import { motion, useInView } from "motion/react";
 import { useRef, useState } from "react";
+import Image from "next/image";
 import { Copy, Check, Zap, Package, Stethoscope } from "lucide-react";
 import {
   HeartIllustration,
@@ -10,7 +11,8 @@ import {
   StarIllustration,
 } from "./Illustrations";
 
-const DOG_IMG = "/images/hero/hero-22.jpg";
+// Versão otimizada gerada por `yarn optimize:hero`; o original tem 6,2 MB.
+import dogImage from "../../public/images/hero/optimized/hero-22.jpg";
 
 const impacts = [
   { icon: Package, label: "Ração e cuidados diários", color: "#FF5500" },
@@ -166,10 +168,14 @@ export function Donations() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="rounded-3xl overflow-hidden h-48 hidden md:block relative"
             >
-              <img
-                src={DOG_IMG}
+              <Image
+                src={dogImage}
                 alt="Animal aguardando cuidados"
-                className="w-full h-full object-cover"
+                fill
+                sizes="(max-width: 767px) 100vw, 45vw"
+                quality={70}
+                placeholder="blur"
+                className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-[#FF6B9D]/40 to-transparent" />
               <div className="absolute bottom-4 left-4">
