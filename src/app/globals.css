@@ -183,3 +183,129 @@
     line-height: 1.5;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Animações de entrada do Hero
+
+   Ficam em CSS, e não no motion, porque as variantes initial/animate são
+   aplicadas pelo JS: o conteúdo acima da dobra era servido com opacity:0 e só
+   aparecia depois que o bundle carregava e hidratava (LCP no <h1> em ~12,9s
+   contra FCP em ~2,8s). Em CSS a linha do tempo começa no primeiro paint.
+
+   As durações/delays/ângulos vêm por custom property inline, para que o
+   componente continue sendo a fonte da coreografia.
+
+   O que continua no motion: parallax e fade ligados ao scroll (useTransform) e
+   os estados de hover/tap dos botões — nenhum deles bloqueia o primeiro paint.
+   --------------------------------------------------------------------------- */
+
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(var(--hero-rise-from, 60px));
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes hero-pop {
+  from {
+    opacity: 0;
+    transform: scale(0) rotate(var(--hero-rotate, 0deg));
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(var(--hero-rotate, 0deg));
+  }
+}
+
+@keyframes hero-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* pathLength="1" no <path> normaliza o comprimento, então dasharray/dashoffset
+   em unidade 1 equivalem ao pathLength do motion. */
+@keyframes hero-draw {
+  from {
+    opacity: 0;
+    stroke-dashoffset: 1;
+  }
+  to {
+    opacity: 1;
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Loops contínuos: rodam no filho, como no motion, para compor com o
+   transform de entrada aplicado no pai. */
+@keyframes hero-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(var(--hero-rotate, 0deg));
+  }
+  50% {
+    transform: translateY(-10px)
+      rotate(calc(var(--hero-rotate, 0deg) + 8deg));
+  }
+}
+
+@keyframes hero-nudge {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(7px);
+  }
+}
+
+.hero-rise {
+  animation: hero-rise var(--hero-duration, 0.9s) cubic-bezier(0.16, 1, 0.3, 1)
+    var(--hero-delay, 0s) both;
+}
+
+/* cubic-bezier com overshoot aproxima o spring bounce 0.5 do motion. */
+.hero-pop {
+  animation: hero-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1)
+    var(--hero-delay, 0s) both;
+}
+
+.hero-fade {
+  animation: hero-fade var(--hero-duration, 0.6s) ease-out var(--hero-delay, 0s)
+    both;
+}
+
+.hero-draw {
+  stroke-dasharray: 1;
+  animation: hero-draw 0.8s ease-out var(--hero-delay, 0s) both;
+}
+
+.hero-float {
+  animation: hero-float var(--hero-float-duration, 4s) ease-in-out infinite;
+}
+
+.hero-nudge {
+  animation: hero-nudge 1.8s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-rise,
+  .hero-pop,
+  .hero-fade,
+  .hero-draw {
+    animation-delay: 0s;
+    animation-duration: 1ms;
+  }
+
+  .hero-float,
+  .hero-nudge {
+    animation: none;
+  }
+}

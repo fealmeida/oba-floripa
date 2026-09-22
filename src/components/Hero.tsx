@@ -1,6 +1,6 @@
 "use client";
 import { motion, useScroll, useTransform } from "motion/react";
-import { useRef } from "react";
+import { useRef, type CSSProperties } from "react";
 import Image from "next/image";
 import { ChevronDown } from "lucide-react";
 import {
@@ -157,37 +157,26 @@ export function Hero() {
 
       {/* Floating illustrated elements */}
       {floatingElements.map((el, i) => (
-        <motion.div
+        <div
           key={i}
-          initial={{ opacity: 0, scale: 0, rotate: el.rotate }}
-          animate={{ opacity: 1, scale: 1, rotate: el.rotate }}
-          transition={{
-            delay: el.delay + 0.8,
-            duration: 0.6,
-            type: "spring",
-            bounce: 0.5,
-          }}
-          className={`absolute ${el.size} pointer-events-none`}
-          style={{
-            top: el.top,
-            left: (el as any).left,
-            right: (el as any).right,
-          }}
+          className={`hero-pop absolute ${el.size} pointer-events-none`}
+          style={
+            {
+              top: el.top,
+              left: el.left,
+              right: el.right,
+              "--hero-delay": `${el.delay + 0.8}s`,
+              "--hero-rotate": `${el.rotate}deg`,
+            } as CSSProperties
+          }
         >
-          <motion.div
-            animate={{
-              y: [0, -10, 0],
-              rotate: [el.rotate, el.rotate + 8, el.rotate],
-            }}
-            transition={{
-              repeat: Infinity,
-              duration: el.duration,
-              ease: "easeInOut",
-            }}
+          <div
+            className="hero-float"
+            style={{ "--hero-float-duration": `${el.duration}s` } as CSSProperties}
           >
             <el.Component color={el.color} className="w-full h-full" />
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
       ))}
 
       {/* Content */}
@@ -195,18 +184,18 @@ export function Hero() {
         style={{ opacity }}
         className="relative z-10 max-w-7xl mx-auto px-6 pt-12 md:pt-24 pb-20 md:pb-28 w-full [@media(max-width:767px)_and_(max-height:669px)]:pb-10 [@media(max-width:767px)_and_(min-height:800px)_and_(max-height:899px)]:pb-36"
       >
-        <motion.h1
-          initial={{ opacity: 0, y: 60 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.4, duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-          className="text-primary-foreground mb-6 max-w-3xl [@media(min-height:701px)_and_(max-height:900px)]:mb-12"
+        <h1
+          className="hero-rise text-primary-foreground mb-6 max-w-3xl [@media(min-height:701px)_and_(max-height:900px)]:mb-12"
           style={{
+            "--hero-delay": "0.4s",
+            "--hero-duration": "0.9s",
+            "--hero-rise-from": "60px",
             fontFamily: "Syne, sans-serif",
             fontWeight: 800,
             fontSize: "clamp(2.40rem, 4.5vw, 4.25rem)",
             lineHeight: 1.0,
             letterSpacing: "-0.03em",
-          }}
+          } as CSSProperties}
         >
           Adotar é
           <br />
@@ -216,50 +205,51 @@ export function Hero() {
           <span className="relative inline-block">
             <span style={{ color: "#FF5500" }}>ação.</span>
             {/* Underline doodle */}
-            <motion.svg
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ pathLength: 1, opacity: 1 }}
-              transition={{ delay: 1.2, duration: 0.8 }}
+            <svg
               viewBox="0 0 200 20"
               className="absolute -bottom-2 left-0 w-full"
               style={{ overflow: "visible" }}
             >
-              <motion.path
+              <path
                 d="M0 10 Q50 2 100 10 Q150 18 200 10"
+                pathLength="1"
                 stroke="#FFB800"
                 strokeWidth="5"
                 fill="none"
                 strokeLinecap="round"
-                initial={{ pathLength: 0 }}
-                animate={{ pathLength: 1 }}
-                transition={{ delay: 1.2, duration: 0.8 }}
+                className="hero-draw"
+                style={{ "--hero-delay": "1.2s" } as CSSProperties}
               />
-            </motion.svg>
+            </svg>
           </span>
-        </motion.h1>
+        </h1>
 
-        <motion.p
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.65, duration: 0.8 }}
-          className="text-primary max-w-lg mb-10 [@media(min-height:701px)_and_(max-height:935px)]:mt-12"
+        <p
+          className="hero-rise text-primary max-w-lg mb-10 [@media(min-height:701px)_and_(max-height:935px)]:mt-12"
           style={{
+            "--hero-delay": "0.65s",
+            "--hero-duration": "0.8s",
+            "--hero-rise-from": "30px",
             fontFamily: "Space Grotesk, sans-serif",
             fontSize: "1.15rem",
             lineHeight: 1.7,
             textShadow:
               "0 0 1px rgba(255,255,255,0.95), 0 1px 3px rgba(255,255,255,0.85), 0 2px 8px rgba(0,0,0,0.18)",
-          }}
+          } as CSSProperties}
         >
           A OBA Floripa conecta pessoas a animais que precisam de amor, abrigo e
           uma segunda chance. Adote. Doe. Transforme vidas.
-        </motion.p>
+        </p>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.85, duration: 0.7 }}
-          className="flex flex-wrap gap-4"
+        <div
+          className="hero-rise flex flex-wrap gap-4"
+          style={
+            {
+              "--hero-delay": "0.85s",
+              "--hero-duration": "0.7s",
+              "--hero-rise-from": "20px",
+            } as CSSProperties
+          }
         >
           <motion.button
             whileHover={{ scale: 1.07 }}
@@ -296,14 +286,18 @@ export function Hero() {
           >
             Quero doar 💛
           </motion.button>
-        </motion.div>
+        </div>
 
         {/* Stats mini */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.1, duration: 0.8 }}
-          className="mt-14 flex flex-wrap gap-3"
+        <div
+          className="hero-rise mt-14 flex flex-wrap gap-3"
+          style={
+            {
+              "--hero-delay": "1.1s",
+              "--hero-duration": "0.8s",
+              "--hero-rise-from": "20px",
+            } as CSSProperties
+          }
         >
           {/* {[
             { num: "1.200+", label: "Animais adotados", color: "#FF5500", bg: "#FF5500" },
@@ -333,28 +327,23 @@ export function Hero() {
               </div>
             </motion.div>
           ))} */}
-        </motion.div>
+        </div>
       </motion.div>
 
       {/* Scroll indicator */}
-      <motion.button
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.6 }}
+      <button
+        className="hero-fade absolute bottom-8 left-1/2 -translate-x-1/2 text-[#555]/60 hover:text-[#FF5500] transition-colors cursor-pointer bg-transparent border-none flex flex-col items-center gap-1"
+        style={{ "--hero-delay": "1.6s" } as CSSProperties}
         onClick={() =>
           document
             .querySelector("#sobre")
             ?.scrollIntoView({ behavior: "smooth" })
         }
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-[#555]/60 hover:text-[#FF5500] transition-colors cursor-pointer bg-transparent border-none flex flex-col items-center gap-1"
       >
-        <motion.div
-          animate={{ y: [0, 7, 0] }}
-          transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
-        >
+        <div className="hero-nudge">
           <ChevronDown size={26} />
-        </motion.div>
-      </motion.button>
+        </div>
+      </button>
     </section>
   );
 }
